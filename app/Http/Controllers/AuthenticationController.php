@@ -14,6 +14,7 @@ class AuthenticationController extends Controller
         return view('login');
     }
 
+
     public function login(Request $request)
     {
         $request->validate([
@@ -29,6 +30,8 @@ class AuthenticationController extends Controller
             if($request->password == $check[0]->password)
             {
                 $request->session()->put('email', $check[0]->email);
+
+                $request->session()->put('loggedIn', true);
                 
                 return redirect('/dashboard');
             }

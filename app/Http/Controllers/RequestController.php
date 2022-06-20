@@ -99,6 +99,8 @@ class RequestController extends Controller
 
     public function questionBySubject(Request $request)
     {
+
+
         $question = DB::table('question')->where('subject_id', '=', $request->subject)->get();
 
 
@@ -107,18 +109,26 @@ class RequestController extends Controller
 
         if(isset($request->learning_type))
         {
-            $questions = $questions->where('learning_type', '=', $request->learning_type);
-        }
-        if(isset($request->university))
-        {
-            $questions = $qeustions->where('university_id', '=', $request->university);
+            $questions = $questions->where('question.learning_type', '=', $request->learning_type);
         }
         if(isset($request->subject))
         {
-            $questions = $questions->where('subject_id', '=', $request->subject);
+            $questions = $questions->where('question.subject_id', '=', $request->subject)
+                                   ->join('subject', 'subject.id', '=', 'question.subject_id');
         }
+        else
+        {
+            $questions = $questions->join('subject', 'subject.id', '=', 'question.subject_id');
+        }
+        if(isset($request->type))
+        {
+            $questions = $questions->where('type', '=', $request->type);
+        }
+
         
-        $questions = $questions->get();
+        $questions = $questions->join('university', 'university.id', '=', 'question.university_id')
+                               ->join('university_year', 'university_year.subject_id', '=', 'question.subject_id')
+                               ->get(array('question.id', 'question.title', 'university.name as university', 'question.learning_type', 'university_year.year', 'subject.name as subject'));
 
 
         return response()->json([

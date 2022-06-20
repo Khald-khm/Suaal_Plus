@@ -14,6 +14,8 @@ class QuestionController extends Controller
 
     public function index()
     {
+        
+
         $university = DB::table('university')->get();
         $subject = DB::table('subject')->get();
         $chapter = DB::table('chapter')->get();
@@ -78,6 +80,7 @@ class QuestionController extends Controller
 
     public function all()
     {
+        
 
         // $all = DB::table('question')->get();
 
@@ -91,26 +94,41 @@ class QuestionController extends Controller
                                     ->orderBy('id', 'asc')
                                     ->get(array('question.id', 'university.name', 'question.title', 'question.learning_type', 'subject.name as subject_name', 'university_year.year as year'));
 
+
+        $subjects = DB::table('subject')->get();
                                     
-        return view('questions.allQuestion', ['all' => $all]);
+        return view('questions.allQuestion', ['all' => $all, 'subjects' => $subjects]);
 
     }
 
 
     public function details($id)
     {
+        $sub_chapter = DB::table('question')->where('question.id', '=', $id)->get(array('sub_chapter_id'));
 
         $details = DB::table('question')->join('university', 'university.id', '=', 'question.university_id')
-                                        ->join('subject', 'subject.id', '=', 'question.subject_id')
-                                        ->join('sub_chapter', 'sub_chapter.id', '=', 'question.sub_chapter_id')
-                                        ->where('question.id', '=', $id)
-                                        ->get(array('question.id', 'question.learning_type', 'university.name as university_name', 'subject.id as subject_id', 'subject.name as subject_name', 'sub_chapter.name as sub_chapter', 'sub_chapter_id', 'year_time', 'library', 'type', 'title'));
-                                        
+                                        ->join('subject', 'subject.id', '=', 'question.subject_id');
+
+        if($sub_chapter[0]->sub_chapter_id != null)
+        {
+            
+            $details = $details->join('sub_chapter', 'sub_chapter.id', '=', 'question.sub_chapter_id')->where('question.id', '=', $id)
+            ->get(array('question.id', 'question.learning_type', 'university.name as university_name', 'subject.id as subject_id', 'subject.name as subject_name', 'sub_chapter.name as sub_chapter', 'sub_chapter_id', 'year_time', 'library', 'type', 'title'));
+            
+
+            $sub_chapter = DB::table('sub_chapter')->where('id', '=', $details[0]->sub_chapter_id)->get(array('chapter_id'));
+    
+            $chapter = DB::table('chapter')->where('chapter.id', '=', $sub_chapter[0]->chapter_id)->get(array('chapter.name'));
+        }
+        else
+        {
+            $details = $details->where('question.id', '=', $id)
+            ->get(array('question.id', 'question.learning_type', 'university.name as university_name', 'subject.id as subject_id', 'subject.name as subject_name',  'year_time', 'library', 'type', 'title'));
+
+            $chapter = null;
+        }
 
 
-        $sub_chapter = DB::table('sub_chapter')->where('id', '=', $details[0]->sub_chapter_id)->get(array('chapter_id'));
-
-        $chapter = DB::table('chapter')->where('chapter.id', '=', $sub_chapter[0]->chapter_id)->get(array('chapter.name'));
 
         $correctAnswer = DB::table('answer')->where('question_id', '=', $id)
                                             ->where('is_correct', '=', true)
@@ -130,16 +148,38 @@ class QuestionController extends Controller
 
     public function edit($id)
     {
+        $sub_chapter = DB::table('question')->where('question.id', '=', $id)->get(array('sub_chapter_id'));
+
+
         $details = DB::table('question')->join('university', 'university.id', '=', 'question.university_id')
                                         ->join('subject', 'subject.id', '=', 'question.subject_id')
-                                        ->join('university_year', 'university_year.subject_id', '=', 'subject.id')
-                                        ->join('sub_chapter', 'sub_chapter.id', '=', 'question.sub_chapter_id')
-                                        ->where('question.id', '=', $id)
-                                        ->get(array('question.id as question_id', 'question.learning_type', 'university_year.university_id as university_id', 'subject.id as subject_id', 'sub_chapter.id as sub_chapter_id', 'year_time', 'library', 'type', 'title', 'university_year.year'));
+                                        ->join('university_year', 'university_year.subject_id', '=', 'subject.id');
+                                        
+        if($sub_chapter[0]->sub_chapter_id != null)
+        {
+            $details = $details->join('sub_chapter', 'sub_chapter.id', '=', 'question.sub_chapter_id')
+                               ->where('question.id', '=', $id)
+                               ->get(array('question.id as question_id', 'question.learning_type', 'university_year.university_id as university_id', 'subject.id as subject_id', 'sub_chapter.id as sub_chapter_id', 'year_time', 'library', 'type', 'title', 'university_year.year'));
+
+            $sub_chapter = DB::table('sub_chapter')->where('id', '=', $details[0]->sub_chapter_id)->get(array('chapter_id'));
+
+            $sub_chapters = DB::table('sub_chapter')->where('chapter_id', '=', $sub_chapter[0]->chapter_id)->get();
+
+            
+
+        }
+        else
+        {
+            $details = $details->where('question.id', '=', $id)
+                               ->get(array('question.id as question_id', 'question.learning_type', 'university_year.university_id as university_id', 'subject.id as subject_id', 'year_time', 'library', 'type', 'title', 'university_year.year'));
+
+            $sub_chapter = null;
+
+            $sub_chapters = null;
+            
+        }
 
 
-
-        $sub_chapter = DB::table('sub_chapter')->where('id', '=', $details[0]->sub_chapter_id)->get(array('chapter_id'));
 
         $correctAnswer = DB::table('answer')->where('question_id', '=', $id)
                                             ->where('is_correct', '=', true)
@@ -156,9 +196,10 @@ class QuestionController extends Controller
                                                ->where('year', '=', $details[0]->year)
                                                ->get();
                     
+        
+        
         $chapters = DB::table('chapter')->where('subject_id', '=', $details[0]->subject_id)->get();
 
-        $sub_chapters = DB::table('sub_chapter')->where('chapter_id', '=', $sub_chapter[0]->chapter_id)->get();
 
         return view('/questions.editQuestion', ['details' => $details, 'chapter' => $chapters, 'sub_chapters' => $sub_chapters, 'university' => $university, 'subject' => $subject, 'sub_chapter' => $sub_chapter, 'correct' => $correctAnswer, 'wrong' => $wrongAnswer]);
 
@@ -187,20 +228,36 @@ class QuestionController extends Controller
             'learning_type' => 'required',
             'university' => 'required',
             'subject' => 'required',
-            'sub_chapter' => 'required',
             'year_time' => 'required',
             'year' => 'required',
         ]);
 
-        // $data = $request->all();
+
+        if(isset($request->library))
+        {
+            $library = $request->library;
+        }
+        else
+        {
+            $library = null;
+        }
+
+        if(isset($request->sub_chapter))
+        {
+            $sub_chapter = $request->sub_chapter;
+        }
+        else
+        {
+            $sub_chapter = null;
+        }
 
         DB::table('question')->insert([
             'title' => $request->title,
             'learning_type' => $request->learning_type,
             'university_id' => $request->university,
             'subject_id' => $request->subject,
-            'sub_chapter_id' => $request->sub_chapter,
-            'library' => $request->library,
+            'library' => $library,
+            'sub_chapter_id' => $sub_chapter,
             'year_time' => $request->year_time,
             'type' => $request->type
         ]);
@@ -252,7 +309,6 @@ class QuestionController extends Controller
             'learning_type' => 'required',
             'university' => 'required',
             'subject' => 'required',
-            'sub_chapter' => 'required',
             'year_time' => 'required',
             'type' => 'required'
 
@@ -266,14 +322,23 @@ class QuestionController extends Controller
         {
             $library = null;
         }
+        
+        if(isset($request->sub_chapter))
+        {
+            $sub_chapter = $request->sub_chapter;
+        }
+        else
+        {
+            $sub_chapter = null;
+        }
 
         DB::table('question')->where('id', '=', $request->id)->update([
                                             'title' => $request->title,
                                             'learning_type' => $request->learning_type,
                                             'university_id' => $request->university,
                                             'subject_id' => $request->subject,
-                                            'sub_chapter_id' => $request->sub_chapter,
                                             'library' => $library,
+                                            'sub_chapter_id' => $sub_chapter,
                                             'year_time' => $request->year_time,
                                             'type' => $request->type ]);
 

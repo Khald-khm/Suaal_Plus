@@ -10,6 +10,8 @@ class HomeController extends Controller
     
     public function index()
     {
+
+
         $home = DB::table('users')->get();
 
         $countUser = count(DB::table('users')->where('status', '=', 'active')->get());
@@ -25,6 +27,9 @@ class HomeController extends Controller
         $userSession = session('email');
 
         return view('/dashboard', ['home' => $home, 'count' => $countUser, 'public' => $countPublic, 'private' => $countPrivate, 'open' => $countOpen, 'virtual' => $countVirtual, 'session' => $userSession]);
+
+    
+
     }
 
 

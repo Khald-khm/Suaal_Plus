@@ -5,6 +5,7 @@ use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\AuthenticationController;
+use App\Http\Middleware\CheckLogin;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,23 +25,44 @@ Route::get('/', function () {
 
 
 
-Route::get('/dashboard', [HomeController::class, 'index']);
+Route::middleware([CheckLogin::class])->group(function(){
 
-Route::get('/allQuestion', [QuestionController::class, 'all']);
+    Route::get('/dashboard', [HomeController::class, 'index']);
+    
+    Route::get('/allQuestion', [QuestionController::class, 'all']);
+    
+    Route::get('/addQuestion', [QuestionController::class, 'index'])->middleware(CheckLogin::class);
+    
+    Route::post('/storeQuestion', [QuestionController::class, 'store']);
+    
+    Route::post('/editQuestion', [QuestionController::class, 'update']);
+    
+    Route::get('/editQuestion/{id}', [QuestionController::class, 'edit']);
+    
+    Route::patch('/editQuestion/{id}', [QuestionController::class, 'edit']);
+    
+    Route::get('/detailQuestion/{id}', [QuestionController::class, 'details']);
+    
+    Route::get('/deleteQuestion/{id}', [QuestionController::class, 'delete']);\
 
-Route::get('/addQuestion', [QuestionController::class, 'index']);
+    
+    
+    Route::post('/tryAjax', [QuestionController::class, 'try']);
+    
+    Route::post('/tryAjax/edit', [QuestionController::class, 'tryEdit']);
+    
+    Route::post('/Request/university', [RequestController::class, 'university']);
+    
+    Route::post('/Request/subject', [RequestController::class, 'subject']);
+    
+    Route::post('Request/chapter', [RequestController::class, 'chapter']);
+    
+    Route::post('/Request/subChapter', [RequestController::class, 'subChapter']);
+    
+    Route::post('/Request/questionBySubject', [RequestController::class, 'questionBySubject']);
 
-Route::post('/storeQuestion', [QuestionController::class, 'store']);
+});
 
-Route::post('/editQuestion', [QuestionController::class, 'update']);
-
-Route::get('/editQuestion/{id}', [QuestionController::class, 'edit']);
-
-Route::patch('/editQuestion/{id}', [QuestionController::class, 'edit']);
-
-Route::get('/detailQuestion/{id}', [QuestionController::class, 'details']);
-
-Route::get('/deleteQuestion/{id}', [QuestionController::class, 'delete']);
 
 Route::get('/login', [AuthenticationController::class, 'view']);
 
@@ -48,19 +70,3 @@ Route::post('/login', [AuthenticationController::class, 'login']);
 
 Route::get('/logout', [AuthenticationController::class, 'logout']);
 
-
-
-
-Route::post('/tryAjax', [QuestionController::class, 'try']);
-
-Route::post('/tryAjax/edit', [QuestionController::class, 'tryEdit']);
-
-Route::post('/Request/university', [RequestController::class, 'university']);
-
-Route::post('/Request/subject', [RequestController::class, 'subject']);
-
-Route::post('Request/chapter', [RequestController::class, 'chapter']);
-
-Route::post('/Request/subChapter', [RequestController::class, 'subChapter']);
-
-Route::post('/Request/questionBySubject', [RequestController::class, 'questionBySubject']);

@@ -241,12 +241,7 @@ $('.submitForm').on('click', function(){
 
 
 
-    if($('#library').val() == '')
-    {
-        $('.errorMessage').html('Please fill library field');
-    }
-    
-    else if($('input[name=year_time]').val() == '')
+    if($('input[name=year_time]').val() == '')
     {
         $('.errorMessage').html('Please fill year_time field');
     }
@@ -269,16 +264,6 @@ $('.submitForm').on('click', function(){
     else if($('#subject').val() == '')
     {
         $('.errorMessage').html('Please fill subject field');
-    }
-    
-    else if($('#chapter').val() == '')
-    {
-        $('.errorMessage').html('Please fill chapter field');
-    }
-    
-    else if($('#sub_chapter').val() == '')
-    {
-        $('.errorMessage').html('Please fill sub_chapter field');
     }
     
     else if($('#type').val() == '')
@@ -307,15 +292,17 @@ $('.submitForm').on('click', function(){
 
         let form = new FormData();
 
+        if($('#library').val() != '')
+        {
+            form.append('library', $('#library').val());
+        }
+
         form.append('_token', _token);
         form.append('title', $('#title').val());
         form.append('year', $('#year').val());
-        form.append('library', $('#library').val());
         form.append('year_time', $('#year_time').val());
         form.append('subject', $('#subject').val());
         form.append('university', $('#university').val());
-        form.append('chapter', $('#chapter').val());
-        form.append('sub_chapter', $('#sub_chapter').val());
         form.append('type', $('#type').val());
         form.append('learning_type', $('#learning_type').val());
 
@@ -381,7 +368,6 @@ $('.submitForm').on('click', function(){
                 contentType: false,
                 processData: false,
                 success: function(response){
-                    alert('success');
                     
                     // console.log(response);
 
@@ -407,7 +393,6 @@ $('.submitForm').on('click', function(){
                 contentType: false,
                 processData: false,
                 success: function(data){
-                    alert('edited successful');
                     window.location = "/allQuestion";
                 },
                 error: function(error){
@@ -423,26 +408,63 @@ $('.submitForm').on('click', function(){
 
 
 
-$('.questionBySubject').on('change', function(){
+$('.questionFilter').on('change', function(){
 
     var form = new FormData();
 
     form.append('_token', _token);
 
-    form.append('subject', $('.questionBySubject').val());
 
-    $.ajax({
-        type: 'POST',
-        data: form,
-        url: '/Request/questionBySubject',
-        cache: false,
-        contentType: false,
-        processData: false,
-        success: function(data){
-            console.log(data);
-        },
-        error: function(error){
-            console.log(error);
+    if($('.questionBySubject').val() == '' && $('.questionByLearning').val() == '' && $('.questionByType').val() == '')
+    {
+        $.ajax({
+            type: 'POST',
+            data: form,
+            url: '/Request/questionBySubject',
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(data){
+                console.log(data);
+            },
+            error: function(error){
+                console.log(error);
+            }
+        });
+    }
+    else
+    {
+
+        if($('.questionBySubject').val() != '')
+        {
+            form.append('subject', $('.questionBySubject').val());
         }
-    })
+        if($('.questionByLearning').val() != '')
+        {
+            form.append('learning_type', $('.questionByLearning').val());
+        }
+        if($('.questionByType').val() != '')
+        {
+            form.append('type', $('.questionByType').val());
+        }
+
+        $.ajax({
+            type: 'POST',
+            data: form,
+            url: '/Request/questionBySubject',
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(data){
+                console.log(data);
+            },
+            error: function(error){
+                console.log(error);
+            }
+        });
+
+    }
+
+
+
 })

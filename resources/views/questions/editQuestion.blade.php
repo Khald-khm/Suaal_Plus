@@ -211,11 +211,13 @@
                             <select style="text-align: right;width:200px;color: #2f3d4a;" id="sub_chapter" name="sub_chapter" class="form-select" aria-label="Default select example">
                                 <option value="" selected> الفهرس - الباب </option>
 
+                                @if($sub_chapters)
                                 @foreach($sub_chapters as $row)
                                     
                                     <option value="{{$row->id}}" class="subChapterOption" @if($row->id == $details[0]->sub_chapter_id) selected @endif> {{$row->name}} </option>
 
                                 @endforeach
+                                @endif
                                 
                             </select>
 
@@ -229,11 +231,13 @@
                             <select style="text-align: right;width:200px;color: #2f3d4a;" id="chapter" name="chapter" class="form-select" aria-label="Default select example">
                                 <option value="" selected id="one"> الفهرس - الفصل </option>
 
+                                @if($chapter)
                                 @foreach($chapter as $row)
 
                                     <option value="{{$row->id}}" class="chapterOption" @if($row->id == $sub_chapter[0]->chapter_id) selected @endif> {{$row->name}} </option>
 
                                 @endforeach
+                                @endif
 
                             </select>
 

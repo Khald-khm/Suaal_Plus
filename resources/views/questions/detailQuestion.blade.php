@@ -119,13 +119,13 @@
             
               </tr>
               <tr class="tr2">
-                <td class="td2" class="td2" class="w3-center"  > {{ $chapter[0]->name }} </td>
+                <td class="td2" class="td2" class="w3-center"  > @if(isset($chapter[0]->name)) {{ $chapter[0]->name }} @else - @endif </td>
             <td class="td2" class="w3-center">الفصل-الفهرس </td>
             
               </tr>
               <tr class="tr2">
 
-                <td class="td2"   class="w3-center" >  {{ $details[0]->sub_chapter }}  </td>
+                <td class="td2"   class="w3-center" >  @if(isset($details[0]->sub_chapter)) {{ $details[0]->sub_chapter }} @else - @endif </td>
             <td class="td2" class="w3-center">الباب-الفهرس </td>
             
               </tr>
@@ -136,7 +136,7 @@
               </tr>
               <tr class="tr2">
 
-                <td class="td2"   class="w3-center" > {{ $details[0]->library }} </td>
+                <td class="td2"   class="w3-center" > @if(isset($details[0]->library)) {{ $details[0]->library }} @else - @endif</td>
             <td class="td2"  class="w3-center">المكتبة</td>
             
               </tr>

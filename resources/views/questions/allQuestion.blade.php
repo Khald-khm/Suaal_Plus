@@ -95,36 +95,35 @@
     
                 <h2 style="margin-top:5%"> الأسئلة</h2><br>
             <a href="addQuestion" id="edit" class="w3-right" >إضافة سؤال جديد</a>
-            <select style="text-align: right;width:200px" class="form-select" id="learning_type" name="learning_type" 
-            aria-label="Default select example">
-            <option value=""  selected> نوع التعليم </option>
-            <!-- <option value=""> الكل </option> -->
-            <option value="عام"> عام </option>
-            <option value="خاص"> خاص </option>
-            <option value="مفتوح"> مفتوح </option>
-            <option value="افتراضي"> افتراضي </option>
-        </select>
-            
-        <select style="text-align: right;width:200px" class="form-select" id="university" name="university"
-            aria-label="Default select example">
-            <option value=""  selected> الجامعة  </option>
-            
-        </select>
-          
-        <select style="text-align: right;width:200px" class="form-select" id="year" name="year" 
-            aria-label="Default select example">
-            <option value=""  selected> السنة  </option>
-            <option value="1">الأولى</option>
-            <option value="2">الثانية</option>
-            <option value="3">الثالثة</option>
-            <option value="4">الرابعة</option>
-        </select>
-        
-        <select style="text-align: right;width:200px" class="form-select questionBySubject" id="subject" name="subject"
-            aria-label="Default select example">
-            <option value=""  selected> المادة  </option>
-        </select>
-          
+            <br><br>
+            <div style="display:flex">
+
+                <select style="text-align: right;width:200px" class="form-select questionByType questionFilter" aria-label="Default select example">
+                    <option value="">نمط السؤال </option>
+                    <option value="الاجابة الصحيحة">الاجابة الصحيحة</option>
+                    <option value="الاجابة الخاطئة">الاجابة الخاطئة</option>
+                    <option value="الاجابة المختلفة">الاجابة المختلفة</option>
+                    <option value="الاجابة الأصح">الاجابة الأصح</option>
+                </select>
+
+                <select style="text-align: right;width:200px" class="form-select questionBySubject questionFilter" aria-label="Default select example">
+                    <option value="">المواد</option>
+                    @foreach($subjects as $subject)
+
+                      <option value="{{ $subject->id }}"> {{ $subject->name }} </option>
+
+                    @endforeach
+                </select>
+
+                <select style="text-align: right;width:200px" class="form-select questionByLearning questionFilter" aria-label="Default select example">
+                  <option value="">نوع التعليم </option>
+                  <option value="عام" >عام</option>
+                  <option value="خاص" >خاص</option>
+                  <option value="مفتوح" >مفتوح</option>
+                  <option value="افتراضي" >افتراضي</option>
+                </select>
+
+            </div>
             <table class="table1">
                 <tr class="tr1">
                     <th class="th1" class="w3-center">التفاصيل </th>
