@@ -41,33 +41,36 @@
     <a href="dashboard">
       <i class="fa fa-dashboard" aria-hidden="true"></i>
       لوحة التحكم </a>
-    <a href="chart.html">
+    <a href="/statistics">
       <i class="fa fa-pie-chart icons" aria-hidden="true"></i>
       الاحصائيات
     </a>
     <a href="allQuestion">
       <i class="fa fa-list" aria-hidden="true"></i>
       الأسئلة </a>
+    <a href="/subject">
+      <i class="fa fa-book" aria-hidden="true"></i>
+    المواد </a>
     <a href="request.html">
       <i class="fa fa-envelope-open" aria-hidden="true"></i>
       طلبات الاشتراك </a>
-    <a href="users.html">
+    <a href="/users">
       <i class="fa fa-group" aria-hidden="true"></i>
       المستخدمين </a>
-    <a href="profile.html">
+    <a href="/profile">
       <i class="fa fa-address-card" aria-hidden="true"></i>
       الملف الشخصي </a>
-    <a href="privilege.html">
+    <a href="/privilege">
       <i class="fa fa-cubes" aria-hidden="true"></i>
       الصلاحيات </a>
     <a href="pages.html">
       <i class="fa fa-clone" aria-hidden="true"></i>
       الصفحات </a>
-    <a href="company.html">
+    <a href="/company">
       <i class="fa fa-building" aria-hidden="true"></i>
       الشركات
     </a>
-    <a href="advertisement.html">
+    <a href="/advertisement">
       <i class="fa fa-laptop icons" aria-hidden="true"></i>
       اعلانات </a>
 
@@ -157,35 +160,13 @@
                 <td class="td1"style="width:300px"> {{ date('Y-m-d', strtotime($home[$loop->index]->created_at))  }} </td>
                 <td class="td1"style="width:300px" id="td-qhd" class="w3-center"> @if($home[$loop->index]->graduated) {{ "خريج" }} @else {{ "طالب" }} @endif </td>
                 <td class="td1"style="width:300px">{{ $home[$loop->index]->first_name . ' ' . $home[$loop->index]->last_name }}</td>
-                <td class="td1"style="width:300px"> {{ $home[$loop->index]->id }} </td>
+                <td class="td1"style="width:300px"> {{ $loop->index + 1 }} </td>
       
               </tr>
 
           @endforeach
 
-          <tr class="tr1">
-
-            <a href="#">
-              <td class="td1"style="width:300px" class="w3-center "> <a href="users.html" style="text-decoration: none;text-align:center"> التفاصيل  <i  class="fa fa-search" style="font-size: 25px;"></i> </a> </td>
-            </a>
-            <td class="td1"style="width:300px" >2-3-2022 </td>
-            <td class="td1"style="width:300px" id="td-qhd" class="w3-center">طالب</td>
-            <td class="td1"style="width:300px">Raghad</td>
-            <td class="td1"style="width:300px">5</td>
-
-          </tr>
-
-          <tr class="tr1">
-
-            <a href="#">
-              <td class="td1"style="width:300px" class="w3-center "> <a href="users.html" style="text-decoration: none;text-align:center">  التفاصيل <i  class="fa fa-search" style="font-size: 25px;"></i> </a> </td>
-            </a>
-            <td class="td1"style="width:300px">2-3-2022</td>
-            <td class="td1"style="width:300px" id="td-qhd" class="w3-center">خريج</td>
-            <td class="td1"style="width:300px">Raghad</td>
-            <td class="td1"style="width:300px">7</td>
-
-          </tr>
+          
         </table>
       </div>
       <br<br><br><hr>

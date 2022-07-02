@@ -6,7 +6,7 @@ let _token = $('meta[name="csrf-token"]').attr('content');
 
 $('.addCorrect').on('click', function(){
 
-    $('.correctAnswers').append('<input type="text" class="form-control-input mt-2 mb-2" name="correctAnswer_' + correct + '" id="correct_' + correct + '" placeholder="جواب صحيح">');
+    $('.correctAnswers').append('<input type="text" class="form-control-input mt-2 mb-2 addedCorrect" name="correctAnswer_' + correct + '" id="correct_' + correct + '" placeholder="جواب صحيح" autocomplete="off">');
 
     correct += 1;
 
@@ -19,7 +19,7 @@ $('.addCorrect').on('click', function(){
 
 $('.addWrong').on('click', function(){
 
-    $('.wrongAnswers').append('<input type="text" class="form-control-input mt-2 mb-2" name="wrongAnswer_' + wrong + '" id="wrong_' + wrong + '" placeholder="جواب خطأ">');
+    $('.wrongAnswers').append('<input type="text" class="form-control-input mt-2 mb-2 addedWrong" name="wrongAnswer_' + wrong + '" id="wrong_' + wrong + '" placeholder="جواب خطأ" autocomplete="off">');
 
     wrong += 1;
 
@@ -355,7 +355,7 @@ $('.submitForm').on('click', function(){
         form.append('wrongNum', wrongAdded);
         
 
-        if($(this).attr('id') == 'add')
+        if($(this).attr('id') == 'submitBtnAdd')
         {
 
             
@@ -367,11 +367,36 @@ $('.submitForm').on('click', function(){
                 cache: false,
                 contentType: false,
                 processData: false,
+                beforeSend: function(){
+                    $("#submitBtnAdd").css("pointer-events","none");
+                    $('#submitBtnAdd').html('');
+                    $('#submitBtnAdd').html('<span class="lds-dual-ring"></span>');
+                },
                 success: function(response){
                     
                     // console.log(response);
 
-                    window.location = '/allQuestion';
+                    // window.location = '/allQuestion';
+                    $("#submitBtnAdd").css("pointer-events","auto");
+
+
+                    $('#submitBtnAdd').html('إضافة');
+
+
+                    $('#title').val('');
+
+                    $('#correct_1').val('');
+                    $('#wrong_1').val('');
+                    $('.addedCorrect').val('');
+                    $('.addedWrong').val('');
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'تم إضافة السؤال بنجاح',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    
                 },
                 error: function(error){
                     
@@ -466,5 +491,261 @@ $('.questionFilter').on('change', function(){
     }
 
 
+
+});
+
+
+
+
+
+$('.filteringUser').on('change', function(){
+
+    var role = $('#userFilter').val();
+
+    var form = new FormData();
+
+    form.append('_token', _token);
+    
+
+    if(role == 'all')
+    {
+        $('#countryFilter').removeClass('d-none');
+        $('#yearFilter').addClass('d-none');
+        $('#yearFilter').val('');
+        $('#universityFilter').addClass('d-none');
+        $('#universityFilter').val('');
+        $('#learning_typeFilter').addClass('d-none');
+        $('#learning_typeFilter').val('');
+    }
+    else if(role == 'student')
+    {
+        $('#countryFilter').removeClass('d-none');
+        $('#yearFilter').removeClass('d-none');
+        $('#universityFilter').removeClass('d-none');
+        $('#learning_typeFilter').removeClass('d-none');
+    }
+    else if(role == 'graduated')
+    {
+        $('#countryFilter').removeClass('d-none');
+        $('#yearFilter').addClass('d-none');
+        $('#yearFilter').val('');
+        $('#universityFilter').addClass('d-none');
+        $('#universityFilter').val('');
+        $('#learning_typeFilter').addClass('d-none');
+        $('#learning_typeFilter').val('');
+    }
+    else
+    {
+        $('#countryFilter').addClass('d-none');
+        $('#countryFilter').val('');
+        $('#yearFilter').addClass('d-none');
+        $('#yearFilter').val('');
+        $('#universityFilter').addClass('d-none');
+        $('#universityFilter').val('');
+        $('#learning_typeFilter').addClass('d-none');
+        $('#learning_typeFilter').val('');
+    }
+
+    form.append('user', $('#userFilter').val());
+
+    if($('#countryFilter').val() != '')
+    {
+        form.append('country', $('#countryFilter').val());
+    }
+    
+    if($('#yearFilter').val() != '')
+    {
+        form.append('year', $('#yearFilter').val());
+    }
+    
+    if($('#universityFilter').val() != '')
+    {
+        form.append('university', $('#universityFilter').val());
+    }
+    
+    if($('#learning_typeFilter').val() != '')
+    {
+        form.append('learning_type', $('#learning_typeFilter').val());
+    }
+
+    $.ajax({
+        type: 'POST',
+        url: '/userFilter',
+        data: form,
+        cache: false,
+        contentType: false,
+        processData: false,
+        beforeSend: function(){
+            console.log('pleas wait...');
+        },
+        success: function(data){
+
+            if(role == 'all')
+            {
+                $('.table-users').html(
+                    '<tr class="tr1">'
+                        +'<th class="th1" class="w3-center">حذف </th>'
+                        +'<th class="th1" class="w3-center">تعديل</th>'
+                        +'<th class="th-users" class="w3-center">الحالة </th>'
+                        +'<th class="th-users" class="w3-center">رقم الموبايل</th>'
+                        +'<th class="th-users" class="w3-center">المحافظة</th>'
+                        +'<th class="th-users" class="w3-center">البلد</th>'
+                        +'<th class="th-users" class="w3-center">البريد الإلكتروني</th>'
+                        +'<th class="th-users" class="w3-center">اسم المستخدم</th>'
+                        +'<th class="th-users"  >رقم المستخدم</th>'
+                    +'</tr>'
+                );
+
+                
+                var i = 1;
+                for(var user in data.users)
+                {
+                    var userRole = 'طالب';
+                    if(data.users[user].graduated == true )
+                    {
+                        userRole = 'خريج';
+                    }
+                    
+                    
+
+                    $('.table-users').append(
+                        '<tr>'
+                            +'<td class="td1" class="w3-center "> <a href="/delete-users/' + data.users[user].id + '" style="text-decoration: none;text-align:center">   <i  class="fa fa-trash-o" style="font-size: 25px;"></i> </a> </td>'
+                            +'<td class="td1" class="w3-center "> <a href="/edit-users/' +  data.users[user].id + '" style="text-decoration: none;text-align:center">   <i  class="fa fa-edit" style="font-size: 25px;"></i> </a> </td>'
+                            +'<td class="td-users"> ' + userRole + ' </td>'
+                            +'<td class="td-users"> ' + data.users[user].phone + ' </td>'
+                            +'<td class="td-users"> ' + data.users[user].city + ' </td>'
+                            +'<td class="td-users"> ' + data.users[user].country + ' </td>'
+                            +'<td class="td-users"> ' + data.users[user].email + ' </td>'
+                            +'<td class="td-users"> ' + data.users[user].first_name + ' ' + data.users[user].last_name + ' </td>'
+                            +'<td class="td-users"> ' + i + ' </td>'
+                        +'</tr>'
+                    )
+
+                    i++;
+                }
+            }
+            
+            if(role == 'student')
+            {
+                $('.table-users').html(
+                    '<tr class="tr1">'
+                        +'<th class="th1" class="w3-center">حذف </th>'
+                        +'<th class="th1" class="w3-center">تعديل</th>'
+                        +'<th class="th-users" class="w3-center">الحالة </th>'
+                        +'<th class="th-users" class="w3-center">رقم الموبايل</th>'
+                        +'<th class="th-users" class="w3-center">المحافظة</th>'
+                        +'<th class="th-users" class="w3-center">البلد</th>'
+                        +'<th class="th-users" class="w3-center">تاريخ الميلاد</th>'
+                        +'<th class="th-users" class="w3-center">السنة </th>'
+                        +'<th class="th-users" class="w3-center">الجامعة</th>'
+                        +'<th class="th-users" class="w3-center">نوع التعليم</th>'
+                        +'<th class="th-users" class="w3-center">البريد الإلكتروني</th>'
+                        +'<th class="th-users" class="w3-center">اسم المستخدم</th>'
+                        +'<th class="th-users"  >رقم المستخدم</th>'
+                    +'</tr>'
+                );
+
+                var i = 1;
+
+                for(var user in data.users)
+                {
+                    $('.table-users').append(
+                        '<tr>'
+                            +'<td class="td1" class="w3-center "> <a href="/delete-users/' + data.users[user].id + '" style="text-decoration: none;text-align:center">   <i  class="fa fa-trash-o" style="font-size: 25px;"></i> </a> </td>'
+                            +'<td class="td1" class="w3-center "> <a href="/edit-users/' +  data.users[user].id + '" style="text-decoration: none;text-align:center">   <i  class="fa fa-edit" style="font-size: 25px;"></i> </a> </td>'
+                            +'<td class="td-users">طالب </td>'
+                            +'<td class="td-users"> ' + data.users[user].phone + ' </td>'
+                            +'<td class="td-users"> ' + data.users[user].city + ' </td>'
+                            +'<td class="td-users"> ' + data.users[user].country + ' </td>'
+                            +'<td class="td-users">تاريخ الميلاد</td>'
+                            +'<td class="td-users"> ' + data.users[user].study_year + ' </td>'
+                            +'<td class="td-users"> ' + data.users[user].university_id + ' </td>'
+                            +'<td class="td-users"> ' + data.users[user].learning_type + ' </td>'
+                            +'<td class="td-users"> ' + data.users[user].email + ' </td>'
+                            +'<td class="td-users"> ' + data.users[user].first_name + ' ' + data.users[user].last_name + ' </td>'
+                            +'<td class="td-users"> ' + i + ' </td>'
+                        +'</tr>'
+                    )
+
+                    i++;
+                }
+            }
+            else if(role == 'graduated')
+            {
+                $('.table-users').html(
+                    '<tr class="tr1">'
+                        +'<th class="th1" class="w3-center">حذف </th>'
+                        +'<th class="th1" class="w3-center">تعديل</th>'
+                        +'<th class="th-users" class="w3-center">الحالة </th>'
+                        +'<th class="th-users" class="w3-center">رقم الموبايل</th>'
+                        +'<th class="th-users" class="w3-center">المحافظة</th>'
+                        +'<th class="th-users" class="w3-center">البلد</th>'
+                        +'<th class="th-users" class="w3-center">البريد الإلكتروني</th>'
+                        +'<th class="th-users" class="w3-center">اسم المستخدم</th>'
+                        +'<th class="th-users"  >رقم المستخدم</th>'
+                    +'</tr>'
+                );
+
+                var i = 1;
+
+                for(var user in data.users)
+                {
+                    $('.table-users').append(
+                        '<tr>'
+                            +'<td class="td1" class="w3-center "> <a href="/delete-users/' + data.users[user].id + '" style="text-decoration: none;text-align:center">   <i  class="fa fa-trash-o" style="font-size: 25px;"></i> </a> </td>'
+                            +'<td class="td1" class="w3-center "> <a href="/edit-users/' +  data.users[user].id + '" style="text-decoration: none;text-align:center">   <i  class="fa fa-edit" style="font-size: 25px;"></i> </a> </td>'
+                            +'<td class="td-users"> خريج </td>'
+                            +'<td class="td-users"> ' + data.users[user].phone + ' </td>'
+                            +'<td class="td-users"> ' + data.users[user].city + ' </td>'
+                            +'<td class="td-users"> ' + data.users[user].country + ' </td>'
+                            +'<td class="td-users"> ' + data.users[user].email + ' </td>'
+                            +'<td class="td-users"> ' + data.users[user].first_name + ' ' + data.users[user].last_name + ' </td>'
+                            +'<td class="td-users"> ' + i + ' </td>'
+                        +'</tr>'
+                    )
+
+                    i++;
+                }
+            }
+
+
+            else if(role == 'admin')
+            {
+                $('.table-users').html(
+                    '<tr class="tr1">'
+                        +'<th class="th1" class="w3-center">حذف </th>'
+                        +'<th class="th1" class="w3-center">تعديل</th>'
+                        +'<th class="th-users" class="w3-center">الحالة </th>'
+                        +'<th class="th-users" class="w3-center">البريد الإلكتروني</th>'
+                        +'<th class="th-users" class="w3-center">اسم المستخدم</th>'
+                        +'<th class="th-users"  >رقم المستخدم</th>'
+                    +'</tr>'
+                );
+
+                var i = 1;
+                for(var user in data.users)
+                {
+                    $('.table-users').append(
+                        '<tr>'
+                            +'<td class="td1" class="w3-center "> <a href="/delete-users/' + data.users[user].id + '" style="text-decoration: none;text-align:center">   <i  class="fa fa-trash-o" style="font-size: 25px;"></i> </a> </td>'
+                            +'<td class="td1" class="w3-center "> <a href="/edit-users/' +  data.users[user].id + '" style="text-decoration: none;text-align:center">   <i  class="fa fa-edit" style="font-size: 25px;"></i> </a> </td>'
+                            +'<td class="td-users"> ادمن </td>'
+                            +'<td class="td-users"> ' + data.users[user].email + ' </td>'
+                            +'<td class="td-users"> ' + data.users[user].first_name + ' ' + data.users[user].last_name + ' </td>'
+                            +'<td class="td-users"> ' + i + ' </td>'
+                        +'</tr>'
+                    );
+
+                    i++;
+                }
+
+            }
+
+        },
+        error: function(error){
+            console.log(error);
+        }
+    })
 
 })

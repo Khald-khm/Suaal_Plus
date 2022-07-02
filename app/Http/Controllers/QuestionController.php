@@ -262,7 +262,7 @@ class QuestionController extends Controller
             'type' => $request->type
         ]);
 
-        $question = DB::table('question')->where('title', '=', $request->title)->get(array('id'));
+        $question = DB::table('question')->where('title', '=', $request->title)->ORDERBY('id', 'DESC')->limit(1)->get(array('id'));
 
         for($i = 0; $i < count($request->correctArr); $i++)
         {

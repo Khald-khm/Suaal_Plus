@@ -23,40 +23,43 @@
 
 <body >
  
-     <div class="sidebarn">
-      <div class="search">
+    <div class="sidebarn">
+        <div class="search">
             <input type="text" placeholder="...ابحث" name="search">
         </div>
           <a href="dashboard">
           <i class="fa fa-dashboard" aria-hidden="true"></i>
 لوحة التحكم         </a>
-        <a href="chart.html">
+        <a href="/statistics">
           <i class="fa fa-pie-chart icons" aria-hidden="true"></i>
           الاحصائيات
                 </a>
         <a href="/allQuestion">
           <i class="fa fa-list" aria-hidden="true"></i>
           الأسئلة        </a>
+        <a href="/subject">
+            <i class="fa fa-book" aria-hidden="true"></i>
+        المواد </a>
         <a href="request.html">
           <i class="fa fa-envelope-open" aria-hidden="true"></i>
           طلبات الاشتراك        </a>
-        <a href="users.html">
+        <a href="/users">
           <i class="fa fa-group" aria-hidden="true"></i>
           المستخدمين        </a>
-        <a href="profile.html">
+        <a href="/profile">
             <i class="fa fa-address-card" aria-hidden="true"></i>
             الملف الشخصي          </a>
-          <a href="privilege.html">
+          <a href="/privilege">
             <i class="fa fa-cubes" aria-hidden="true"></i>
             الصلاحيات          </a>
            <a href="pages.html">
             <i class="fa fa-clone" aria-hidden="true"></i>
             الصفحات          </a>
-            <a href="company.html">
+            <a href="/company">
                 <i class="fa fa-building" aria-hidden="true"></i>
                 الشركات
               </a>
-          <a href="advertisement.html">
+          <a href="/advertisement">
             <i class="fa fa-laptop icons" aria-hidden="true"></i>
 اعلانات          </a>
          
@@ -215,7 +218,9 @@
                 <div class="form-group" style="display: inline-block">
 
                     <label id="l1"> نص السؤال  </label>
-                    <input type="text" class="form-control-input" id="title" name="title" required>
+                    <!-- <input type="text" class="form-control-input" id="title" name="title" required> -->
+
+                    <textarea class="form-control-input" name="title" id="title" cols="30" rows="10" required></textarea>
                     <label class="label-control" for="lname"></label>
                 </div><br>
 
@@ -248,7 +253,7 @@
 
                 <div class="form-group correctAnswers" style="display: inline-block">
                         <label id="l1"> الأجوبة الصحيحة </label>
-                        <input type="text" class="form-control-input" name="correctAnswer_1" id="correct_1" placeholder="جواب صحيح">
+                        <input type="text" class="form-control-input" name="correctAnswer_1" id="correct_1" placeholder="جواب صحيح" autocomplete="off">
                             
                 </div>
 
@@ -262,7 +267,7 @@
 
                 <div class="form-group wrongAnswers" style="display: inline-block">
                         <label id="l1">الأجوبة الخاطئة </label>
-                        <input type="text" class="form-control-input" name="wrongAnswer_1" id="wrong_1" placeholder="جواب خطأ">
+                        <input type="text" class="form-control-input" name="wrongAnswer_1" id="wrong_1" placeholder="جواب خطأ" autocomplete="off">
                         <!-- <datalist id="browsers">
                             <option value="Edge">
                             <option value="Firefox">
@@ -290,7 +295,7 @@
                 <div class="form-group" style="display: inline-block">
 
 
-                    <label class="form-control-submit-button submitForm" id="add"> إضافة </label>
+                    <label class="form-control-submit-button submitForm" id="submitBtnAdd"> إضافة   </label>
                     <!-- </button> -->
                 </div>
                 <div class="form-message">
@@ -311,12 +316,12 @@
     </table>
 
 
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        
+    <script src="{{ asset('js/jquery.min.js') }}"></script>
 
-    
-<script src="{{ asset('js/jquery.min.js') }}"></script>
 
-
-<script src="{{ asset('js/main.js') }}"></script>
+    <script src="{{ asset('js/main.js') }}"></script>
 
 
 

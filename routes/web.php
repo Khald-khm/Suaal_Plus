@@ -61,6 +61,86 @@ Route::middleware([CheckLogin::class])->group(function(){
     
     Route::post('/Request/questionBySubject', [RequestController::class, 'questionBySubject']);
 
+
+
+    Route::get('/statistics', [HomeController::class, 'statistics']);
+
+    Route::get('/answerStatistics', [HomeController::class, 'answerStatistics']);
+
+    Route::get('/top-student', [HomeController::class, 'topStudent']);
+    
+
+
+    
+    Route::get('/users', [HomeController::class, 'users']);
+
+    Route::post('/userFilter', [HomeController::class, 'userFilter']);
+    
+    
+    
+    Route::get('/profile', [HomeController::class, 'profile']);
+    
+    Route::get('/newAdmin', [HomeController::class, 'newAdmin']);
+    
+    Route::post('/newAdmin', [HomeController::class, 'addAdmin']);
+    
+    
+
+
+    Route::get('/subject', [HomeController::class, 'subject']);
+
+    Route::get('/newSubject', [HomeController::class, 'newSubject']);
+
+    Route::post('/newSubject', [HomeController::class, 'addSubject']);
+
+    Route::get('/edit-subject/{id}', [HomeController::class, 'editSubject']);
+
+    Route::post('/edit-subject', [HomeController::class, 'updateSubject']);
+
+    Route::get('/delete-subject/{id}', [HomeController::class, 'deleteSubject']);
+
+
+
+    Route::get('/privilege', [HomeController::class, 'privilege']);
+
+    Route::post('/privilege', [HomeController::class, 'changePrivilege']);
+
+
+
+    Route::get('/company', [HomeController::class, 'company']);
+
+    Route::get('/new-company', [HomeController::class, 'new_company']);
+
+    Route::post('/new-company', [HomeController::class, 'add_company']);
+
+    Route::get('/edit-company/{id}', [HomeController::class, 'edit_company']);
+
+    Route::patch('/edit-company/{id}', [HomeController::class, 'update_company']);
+
+    Route::get('/delete-company/{id}', [HomeController::class, 'delete_company']);
+
+
+    Route::get('/new-copon', [HomeController::class, 'new_copon']);
+
+    Route::post('/new-copon', [HomeController::class, 'add_copon']);
+
+    Route::get('/edit-copon/{id}', [HomeController::class, 'edit_copon']);
+
+    Route::patch('/edit-copon/{id}', [HomeController::class, 'update_copon']);
+
+    Route::get('/requested-copon', [HomeController::class, 'requested_copon']);
+
+    Route::get('/delete-copon/{id}', [HomeController::class, 'delete_copon']);
+
+
+
+    Route::get('/advertisement', [HomeController::class, 'advertisement']);
+
+    Route::post('/advertisement', [HomeController::class, 'create_advertisement']);
+
+    Route::get('/delete-advertisement/{id}', [HomeController::class, 'delete_advertisement']);
+    
+
 });
 
 

@@ -43,33 +43,36 @@
                   <a href="/dashboard">
               <i class="fa fa-dashboard" aria-hidden="true"></i>
     لوحة التحكم         </a>
-            <a href="chart.html">
+            <a href="/statistics">
               <i class="fa fa-pie-chart icons" aria-hidden="true"></i>
               الاحصائيات
                     </a>
             <a href="/allQuestion">
               <i class="fa fa-list" aria-hidden="true"></i>
               الأسئلة        </a>
+            <a href="/subject">
+                <i class="fa fa-book" aria-hidden="true"></i>
+            المواد </a>
             <a href="request.html">
               <i class="fa fa-envelope-open" aria-hidden="true"></i>
               طلبات الاشتراك        </a>
-            <a href="users.html">
+            <a href="/users">
               <i class="fa fa-group" aria-hidden="true"></i>
               المستخدمين        </a>
-            <a href="profile.html">
+            <a href="/profile">
                 <i class="fa fa-address-card" aria-hidden="true"></i>
                 الملف الشخصي          </a>
-              <a href="privilege.html">
+              <a href="/privilege">
                 <i class="fa fa-cubes" aria-hidden="true"></i>
                 الصلاحيات          </a>
                <a href="pages.html">
                 <i class="fa fa-clone" aria-hidden="true"></i>
                 الصفحات          </a>
-                <a href="company.html">
+                <a href="/company">
                     <i class="fa fa-building" aria-hidden="true"></i>
                     الشركات
                   </a>
-              <a href="advertisement.html">
+              <a href="/advertisement">
                 <i class="fa fa-laptop icons" aria-hidden="true"></i>
     اعلانات          </a>
              
@@ -124,6 +127,14 @@
                 </select>
 
             </div>
+
+            <br>
+
+            <p >
+
+              العدد الكلي : {{ count($all) }}
+              
+            </p>
             <table class="table1">
                 <tr class="tr1">
                     <th class="th1" class="w3-center">التفاصيل </th>

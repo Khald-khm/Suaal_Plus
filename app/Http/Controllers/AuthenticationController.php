@@ -31,6 +31,10 @@ class AuthenticationController extends Controller
             {
                 $request->session()->put('email', $check[0]->email);
 
+                $request->session()->put('firstName', $check[0]->first_name);
+
+                $request->session()->put('lastName', $check[0]->last_name);
+
                 $request->session()->put('loggedIn', true);
                 
                 return redirect('/dashboard');
