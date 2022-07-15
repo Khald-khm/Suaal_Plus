@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RequestController;
+use App\Http\Controllers\AppRequestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,3 +32,31 @@ Route::post('/sub_chapter', [RequestController::class, 'subChapter']);
 Route::post('/allQuestion', [RequestController::class, 'question']);
 
 Route::post('/elite', [RequestController::class, 'elite']);
+
+
+
+
+// Route::post('/tryToken', [RequestController::class, 'tryToken']);
+
+// Route::post('/checkToken', [RequestController::class, 'checkToken']);
+
+// Route::post('/deleteToken', [RequestController::class, 'deleteToken']);
+
+// Route::post('/existToken', [RequestController::class, 'existToken']);
+
+
+
+Route::post('/createUser', [AppRequestController::class, 'createUser']);
+
+Route::post('/loginUser', [AppRequestController::class, 'loginUser']);
+
+
+Route::middleware('auth:sanctum')->post('/HomeScreen', [AppRequestController::class, 'HomeScreen']);
+
+
+Route::middleware('auth:sanctum')->get('/allGroups', [AppRequestController::class, 'allGroups']);
+
+Route::middleware('auth:sanctum')->post('/createGroup',[AppRequestController::class, 'createGroup']);
+
+Route::middleware('auth:sanctum')->post('/joinGroup', [AppRequestController::class, 'joinGroup']);
+

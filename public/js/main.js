@@ -241,12 +241,12 @@ $('.submitForm').on('click', function(){
 
 
 
-    if($('input[name=year_time]').val() == '')
-    {
-        $('.errorMessage').html('Please fill year_time field');
-    }
+    // if($('input[name=year_time]').val() == '')
+    // {
+    //     $('.errorMessage').html('Please fill year_time field');
+    // }
 
-    else if($('#learning_type').val() == '')
+    if($('#learning_type').val() == '')
     {
         $('.errorMessage').html('Please fill learning_type field');
     }
@@ -271,7 +271,7 @@ $('.submitForm').on('click', function(){
         $('.errorMessage').html('Please fill type field');
     }
 
-    else if($('input[name=title]').val() == '')
+    else if($('#title').val() == '')
     {
         $('.errorMessage').html('Please fill title field');
     }
@@ -296,11 +296,15 @@ $('.submitForm').on('click', function(){
         {
             form.append('library', $('#library').val());
         }
+        
+        if($('#year_time').val() != '')
+        {
+            form.append('year_time', $('#year_time').val());
+        }
 
         form.append('_token', _token);
         form.append('title', $('#title').val());
         form.append('year', $('#year').val());
-        form.append('year_time', $('#year_time').val());
         form.append('subject', $('#subject').val());
         form.append('university', $('#university').val());
         form.append('type', $('#type').val());
@@ -450,7 +454,41 @@ $('.questionFilter').on('change', function(){
             contentType: false,
             processData: false,
             success: function(data){
+
+
+                $('.table1').html(
+                    '<tr class="tr1">'
+                        +'<th class="th1" class="w3-center">التفاصيل </th>'
+                        +'<th  class="th1"style="width:300px" class="w3-center">السنة</th>'
+                        +'<th  class="th1"style="width:300px" class="w3-center">نوع التعليم</th>'
+                        +'<th  class="th1" style="width:300px"class="w3-center">الجامعة</th>'
+                        +'<th class="th1"style="width:600px" class="w3-center" >المادة</th>'
+                        +'<th class="th1"style="width:900px" class="w3-center">نص السؤال </th>'
+                        +'<th class="th1"  class="w3-center">رقم السؤال </th>'
+                    +'</tr>'
+                );
+
+                var i = 1;
+
+                for(var question in data.questions)
+                {
+                    $('.table1').append('<tr >'
+                            +'<td class="td1" class="w3-center "> <a href="/detailQuestion/' + data.questions[question].id +'" style="text-decoration: none;text-align:center">   <i  class="fa fa-search" style="font-size: 25px;"></i> </a> </td>'
+                            +'<td  class="td1" class="w3-center ">  ' + data.questions[question].year +' </td>'
+                            +'<td  class="td1" class="w3-center "> ' + data.questions[question].learning_type +' </td>'
+                            +'<td  class="td1" class="w3-center "> ' + data.questions[question].university +' </td>'
+                            +'<td  class="td1" class="w3-center "> ' + data.questions[question].subject +' </td>'
+                            +'<td   class="td1" class="w3-center "> ' + data.questions[question].title +' </td>'
+                            +'<td   class="td1" class="w3-center "> ' + i +' </td>'
+                        +'</tr>'
+                    );
+
+                    i++;
+                }
+
+                
                 console.log(data);
+                
             },
             error: function(error){
                 console.log(error);
@@ -481,6 +519,39 @@ $('.questionFilter').on('change', function(){
             contentType: false,
             processData: false,
             success: function(data){
+
+                $('.table1').html(
+                    '<tr class="tr1">'
+                        +'<th class="th1" class="w3-center">التفاصيل </th>'
+                        +'<th  class="th1"style="width:300px" class="w3-center">السنة</th>'
+                        +'<th  class="th1"style="width:300px" class="w3-center">نوع التعليم</th>'
+                        +'<th  class="th1" style="width:300px"class="w3-center">الجامعة</th>'
+                        +'<th class="th1"style="width:600px" class="w3-center" >المادة</th>'
+                        +'<th class="th1"style="width:900px" class="w3-center">نص السؤال </th>'
+                        +'<th class="th1"  class="w3-center">رقم السؤال </th>'
+                    +'</tr>'
+                );
+
+                var i = 1;
+
+                for(var question in data.questions)
+                {
+                    $('.table1').append('<tr >'
+                            +'<td class="td1" class="w3-center "> <a href="/detailQuestion/' + data.questions[question].id +'" style="text-decoration: none;text-align:center">   <i  class="fa fa-search" style="font-size: 25px;"></i> </a> </td>'
+                            +'<td  class="td1" class="w3-center ">  ' + data.questions[question].year +' </td>'
+                            +'<td  class="td1" class="w3-center "> ' + data.questions[question].learning_type +' </td>'
+                            +'<td  class="td1" class="w3-center "> ' + data.questions[question].university +' </td>'
+                            +'<td  class="td1" class="w3-center "> ' + data.questions[question].subject +' </td>'
+                            +'<td   class="td1" class="w3-center "> ' + data.questions[question].title +' </td>'
+                            +'<td   class="td1" class="w3-center "> ' + i +' </td>'
+                        +'</tr>'
+                    );
+
+                    i++;
+                }
+
+
+
                 console.log(data);
             },
             error: function(error){
@@ -636,7 +707,6 @@ $('.filteringUser').on('change', function(){
                         +'<th class="th-users" class="w3-center">رقم الموبايل</th>'
                         +'<th class="th-users" class="w3-center">المحافظة</th>'
                         +'<th class="th-users" class="w3-center">البلد</th>'
-                        +'<th class="th-users" class="w3-center">تاريخ الميلاد</th>'
                         +'<th class="th-users" class="w3-center">السنة </th>'
                         +'<th class="th-users" class="w3-center">الجامعة</th>'
                         +'<th class="th-users" class="w3-center">نوع التعليم</th>'
@@ -648,8 +718,18 @@ $('.filteringUser').on('change', function(){
 
                 var i = 1;
 
+                var university_name = 'بدون';
+
                 for(var user in data.users)
                 {
+                    for(var uni in data.university)
+                    {
+                        if(data.users[user].university_id == data.university[uni].id)
+                        {
+                            university_name = data.university[uni].name;
+                        }
+                    }
+
                     $('.table-users').append(
                         '<tr>'
                             +'<td class="td1" class="w3-center "> <a href="/delete-users/' + data.users[user].id + '" style="text-decoration: none;text-align:center">   <i  class="fa fa-trash-o" style="font-size: 25px;"></i> </a> </td>'
@@ -658,9 +738,8 @@ $('.filteringUser').on('change', function(){
                             +'<td class="td-users"> ' + data.users[user].phone + ' </td>'
                             +'<td class="td-users"> ' + data.users[user].city + ' </td>'
                             +'<td class="td-users"> ' + data.users[user].country + ' </td>'
-                            +'<td class="td-users">تاريخ الميلاد</td>'
                             +'<td class="td-users"> ' + data.users[user].study_year + ' </td>'
-                            +'<td class="td-users"> ' + data.users[user].university_id + ' </td>'
+                            +'<td class="td-users"> ' + university_name + ' </td>'
                             +'<td class="td-users"> ' + data.users[user].learning_type + ' </td>'
                             +'<td class="td-users"> ' + data.users[user].email + ' </td>'
                             +'<td class="td-users"> ' + data.users[user].first_name + ' ' + data.users[user].last_name + ' </td>'

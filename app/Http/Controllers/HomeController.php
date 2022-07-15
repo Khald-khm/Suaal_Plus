@@ -160,15 +160,19 @@ class HomeController extends Controller
             $users = $users->where('learning_type', '=', $request->learning_type);
         }
 
+
         if(isset($request->university))
         {
             $users = $users->where('university_id', '=', $request->university);
         }
+        
+        $university = DB::table('university')->get();
 
         $users = $users->get();
 
         return response()->json([
-            'users' => $users
+            'users' => $users,
+            'university' => $university
         ]);
     }
 
@@ -567,7 +571,7 @@ class HomeController extends Controller
             'description' => $request->description,
             'start_date' => date('Y-m-d'),
             'end_date' => $end_date,
-            'img' => "\\".$filename
+            'img' => $filename
         ]);
 
 

@@ -228,9 +228,14 @@ class QuestionController extends Controller
             'learning_type' => 'required',
             'university' => 'required',
             'subject' => 'required',
-            'year_time' => 'required',
             'year' => 'required',
         ]);
+
+        $year_time = null;
+        if(isset($request->year_time))
+        {
+            $year_time = $request->year_time;
+        }
 
 
         if(isset($request->library))
@@ -258,7 +263,7 @@ class QuestionController extends Controller
             'subject_id' => $request->subject,
             'library' => $library,
             'sub_chapter_id' => $sub_chapter,
-            'year_time' => $request->year_time,
+            'year_time' => $year_time,
             'type' => $request->type
         ]);
 
@@ -309,10 +314,15 @@ class QuestionController extends Controller
             'learning_type' => 'required',
             'university' => 'required',
             'subject' => 'required',
-            'year_time' => 'required',
             'type' => 'required'
 
         ]);
+
+        $year_time = null;
+        if(isset($request->year_time))
+        {
+            $year_time = $request->year_time;
+        }
 
         if(isset($request->library))
         {
@@ -339,7 +349,7 @@ class QuestionController extends Controller
                                             'subject_id' => $request->subject,
                                             'library' => $library,
                                             'sub_chapter_id' => $sub_chapter,
-                                            'year_time' => $request->year_time,
+                                            'year_time' => $year_time,
                                             'type' => $request->type ]);
 
         
@@ -466,6 +476,10 @@ class QuestionController extends Controller
             
         }
 
+
+        return response()->json([
+            'request' => $request->year_time
+        ]);
 
     }
 

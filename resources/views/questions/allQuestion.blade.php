@@ -144,8 +144,6 @@
                     <th class="th1"style="width:600px" class="w3-center" >المادة</th>
                     <th class="th1"style="width:900px" class="w3-center">نص السؤال </th>
                     <th class="th1"  class="w3-center">رقم السؤال </th>
-
-
                 </tr>
 
             @foreach($all as $row)
