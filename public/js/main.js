@@ -681,8 +681,8 @@ $('.filteringUser').on('change', function(){
 
                     $('.table-users').append(
                         '<tr>'
-                            +'<td class="td1" class="w3-center "> <a href="/delete-users/' + data.users[user].id + '" style="text-decoration: none;text-align:center">   <i  class="fa fa-trash-o" style="font-size: 25px;"></i> </a> </td>'
-                            +'<td class="td1" class="w3-center "> <a href="/edit-users/' +  data.users[user].id + '" style="text-decoration: none;text-align:center">   <i  class="fa fa-edit" style="font-size: 25px;"></i> </a> </td>'
+                            +'<td class="td1" class="w3-center "> <a href="/delete-user/' + data.users[user].id + '" style="text-decoration: none;text-align:center">   <i  class="fa fa-trash-o" style="font-size: 25px;"></i> </a> </td>'
+                            +'<td class="td1" class="w3-center "> <a href="/edit-user/' +  data.users[user].id + '" style="text-decoration: none;text-align:center">   <i  class="fa fa-edit" style="font-size: 25px;"></i> </a> </td>'
                             +'<td class="td-users"> ' + userRole + ' </td>'
                             +'<td class="td-users"> ' + data.users[user].phone + ' </td>'
                             +'<td class="td-users"> ' + data.users[user].city + ' </td>'
@@ -732,8 +732,8 @@ $('.filteringUser').on('change', function(){
 
                     $('.table-users').append(
                         '<tr>'
-                            +'<td class="td1" class="w3-center "> <a href="/delete-users/' + data.users[user].id + '" style="text-decoration: none;text-align:center">   <i  class="fa fa-trash-o" style="font-size: 25px;"></i> </a> </td>'
-                            +'<td class="td1" class="w3-center "> <a href="/edit-users/' +  data.users[user].id + '" style="text-decoration: none;text-align:center">   <i  class="fa fa-edit" style="font-size: 25px;"></i> </a> </td>'
+                            +'<td class="td1" class="w3-center "> <a href="/delete-user/' + data.users[user].id + '" style="text-decoration: none;text-align:center">   <i  class="fa fa-trash-o" style="font-size: 25px;"></i> </a> </td>'
+                            +'<td class="td1" class="w3-center "> <a href="/edit-user/' +  data.users[user].id + '" style="text-decoration: none;text-align:center">   <i  class="fa fa-edit" style="font-size: 25px;"></i> </a> </td>'
                             +'<td class="td-users">طالب </td>'
                             +'<td class="td-users"> ' + data.users[user].phone + ' </td>'
                             +'<td class="td-users"> ' + data.users[user].city + ' </td>'
@@ -772,8 +772,8 @@ $('.filteringUser').on('change', function(){
                 {
                     $('.table-users').append(
                         '<tr>'
-                            +'<td class="td1" class="w3-center "> <a href="/delete-users/' + data.users[user].id + '" style="text-decoration: none;text-align:center">   <i  class="fa fa-trash-o" style="font-size: 25px;"></i> </a> </td>'
-                            +'<td class="td1" class="w3-center "> <a href="/edit-users/' +  data.users[user].id + '" style="text-decoration: none;text-align:center">   <i  class="fa fa-edit" style="font-size: 25px;"></i> </a> </td>'
+                            +'<td class="td1" class="w3-center "> <a href="/delete-user/' + data.users[user].id + '" style="text-decoration: none;text-align:center">   <i  class="fa fa-trash-o" style="font-size: 25px;"></i> </a> </td>'
+                            +'<td class="td1" class="w3-center "> <a href="/edit-user/' +  data.users[user].id + '" style="text-decoration: none;text-align:center">   <i  class="fa fa-edit" style="font-size: 25px;"></i> </a> </td>'
                             +'<td class="td-users"> خريج </td>'
                             +'<td class="td-users"> ' + data.users[user].phone + ' </td>'
                             +'<td class="td-users"> ' + data.users[user].city + ' </td>'
@@ -807,8 +807,8 @@ $('.filteringUser').on('change', function(){
                 {
                     $('.table-users').append(
                         '<tr>'
-                            +'<td class="td1" class="w3-center "> <a href="/delete-users/' + data.users[user].id + '" style="text-decoration: none;text-align:center">   <i  class="fa fa-trash-o" style="font-size: 25px;"></i> </a> </td>'
-                            +'<td class="td1" class="w3-center "> <a href="/edit-users/' +  data.users[user].id + '" style="text-decoration: none;text-align:center">   <i  class="fa fa-edit" style="font-size: 25px;"></i> </a> </td>'
+                            +'<td class="td1" class="w3-center "> <a href="/delete-user/' + data.users[user].id + '" style="text-decoration: none;text-align:center">   <i  class="fa fa-trash-o" style="font-size: 25px;"></i> </a> </td>'
+                            +'<td class="td1" class="w3-center "> <a href="/edit-user/' +  data.users[user].id + '" style="text-decoration: none;text-align:center">   <i  class="fa fa-edit" style="font-size: 25px;"></i> </a> </td>'
                             +'<td class="td-users"> ادمن </td>'
                             +'<td class="td-users"> ' + data.users[user].email + ' </td>'
                             +'<td class="td-users"> ' + data.users[user].first_name + ' ' + data.users[user].last_name + ' </td>'

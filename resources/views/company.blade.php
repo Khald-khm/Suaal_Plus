@@ -159,7 +159,7 @@
                 <tr class="tr1">
                     <td class="td1" class="w3-center " > <a href="/delete-copon/{{ $copon->id }}" style="text-decoration: none;text-align:center">   <i  class="fa fa-trash-o" style="font-size: 25px;"></i> </a> </td>                
                     <td class="td1" class="w3-center " > <a href="/edit-copon/{{ $copon->id }}" style="text-decoration: none;text-align:center">   <i  class="fa fa-edit" style="font-size: 25px;"></i> </a> </td>
-                    <td class="td1"> فعالة </td>
+                    <td class="td1"> {{ $copon->status }} </td>
                     <td class="td1"> {{ $copon->company_name }} </td>
                     <td class="td1" style="width: 50%" > {{ $copon->description }} </td>
                 </tr>

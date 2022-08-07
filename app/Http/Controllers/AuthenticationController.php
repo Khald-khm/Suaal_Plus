@@ -29,6 +29,8 @@ class AuthenticationController extends Controller
         {
             if($request->password == $check[0]->password)
             {
+                $request->session()->put('id', $check[0]->id);
+
                 $request->session()->put('email', $check[0]->email);
 
                 $request->session()->put('firstName', $check[0]->first_name);

@@ -52,6 +52,13 @@ class AppRequestController extends Controller
 
         
         $password = Hash::make(trim($request->password)) ?? null;
+
+        if($password != null && strlen($request->password) < 8)
+        {
+            return response()->json([
+                'message' => 'Password should be more than 8 characters'
+            ]);
+        }
         
 
         $checkPhone = User::where('phone', $request->phone)->count();
@@ -107,6 +114,7 @@ class AppRequestController extends Controller
             'city' => $city,
             'graduated' => $graduated,
             'carrer' => $carrer,
+            'learning_type' => $learning_type,
             'study_year' => $study_year,
             'university_id' => $university_id,
             'status' => $status,
@@ -182,11 +190,7 @@ class AppRequestController extends Controller
             else
             {
                 return response()->json([
-                    'password' => $request->password,
-                    'hashedPassword' => Hash::make($request->password),
-                    'realPassword' => $checkUser->password,
-                    'message' => 'Password not matched',
-                    'phone' => $request->phone
+                    'message' => 'Password not matched'
                 ]);
             }
 
@@ -246,8 +250,7 @@ class AppRequestController extends Controller
         return response()->json([
             'advertisement' => $ads,
             'topTen' => $topTen,
-            'subject' => $subject,
-            'now' => date('Y-m-d')
+            'subject' => $subject
         ]);
     }
 

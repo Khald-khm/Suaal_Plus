@@ -204,7 +204,7 @@
       <div class="col-div-4-1">
         <div class="box-1" >
           <div class="content-box-1">
-            <p class="head-1" >الطلاب المتفوقين<a href="excellent-students.html">مشاهدة الكل </a></p>
+            <p class="head-1" >الطلاب المتفوقين<a href="/first_ten">مشاهدة الكل </a></p>
             <br />
             
 
@@ -257,7 +257,7 @@
       <div class="col-div-4-1">
         <div class="box-1">
           <div class="content-box-1">
-            <p class="head-1">ترتيب الطلاب <a href="students-arrangement.html">مشاهدة الكل </a></p>
+            <p class="head-1">ترتيب الطلاب <a href="/usersOrder">مشاهدة الكل </a></p>
             <br />
             <p class="act-p">Raghad <i class="fa fa-circle" style="color:red!important;"></i>
             </p>

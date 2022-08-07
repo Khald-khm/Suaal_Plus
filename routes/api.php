@@ -46,9 +46,9 @@ Route::post('/elite', [RequestController::class, 'elite']);
 
 
 
-Route::post('/createUser', [AppRequestController::class, 'createUser']);
+Route::post('/Register', [AppRequestController::class, 'createUser']);
 
-Route::post('/loginUser', [AppRequestController::class, 'loginUser']);
+Route::post('/login', [AppRequestController::class, 'loginUser']);
 
 
 Route::middleware('auth:sanctum')->post('/HomeScreen', [AppRequestController::class, 'HomeScreen']);

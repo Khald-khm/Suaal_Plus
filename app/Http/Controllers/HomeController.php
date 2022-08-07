@@ -51,7 +51,7 @@ class HomeController extends Controller
         $firstTen = DB::table('users')->where('role', '=', 'user')->orderBy('correct_questions', 'DESC')->limit(10)->get();
 
 
-        $allUsers = DB::table('users')->where('role', '=', 'user')->count();
+        $allUsers = DB::table('users')->where('role', '=', 'user')->where('status', 'active')->count();
 
         $students = DB::table('users')->where('graduated', '=', false)->where('role', '=', 'user')->count();
 
@@ -89,6 +89,14 @@ class HomeController extends Controller
                                 ]);
     }
 
+    
+    public function answerStatistics()
+    {
+        $subjects = DB::table('question')->select( DB::raw('subject.name, sum(asked_count) AS asked_time, sum(asked_count) - sum(correct_times) AS "wrong", sum(correct_times) AS correct'))->join('subject', 'subject.id', '=', 'question.subject_id')->GROUPBY('subject_id')->ORDERBY('asked_time', 'desc')->get('subject.name', 'asked_count');
+        
+        return view('/answerStatistics', ['subjects' => $subjects]);
+    }
+    
     public function topStudent()
     {
         $student = DB::table('users')->join('university', 'university.id', '=', 'users.university_id')->where('role', '=', 'user')->where('status', '=', 'active')->orderBy('correct_questions')->limit(10)->get();
@@ -96,12 +104,25 @@ class HomeController extends Controller
         return view('top-student', ['students' => $student]);
     }
 
-    public function answerStatistics()
+    public function usersOrder()
     {
-        $subjects = DB::table('question')->select( DB::raw('subject.name, sum(asked_count) AS asked_time, sum(asked_count) - sum(correct_times) AS "wrong", sum(correct_times) AS correct'))->join('subject', 'subject.id', '=', 'question.subject_id')->GROUPBY('subject_id')->ORDERBY('asked_time', 'desc')->get('subject.name', 'asked_count');
+        $users = DB::table('users')->where('role', 'user')->orderBy('correct_questions', 'DESC')->where('status', '=', 'active')->get();
 
-        return view('/answerStatistics', ['subjects' => $subjects]);
+        $university = DB::table('university')->get();
+
+        return view('usersOrder', ['users' => $users, 'university' => $university]);
     }
+    
+    public function first_ten()
+    {
+        $users = DB::table('users')->where('role', 'user')->orderBy('correct_questions', 'DESC')->where('status', '=', 'active')->limit(10)->get();
+
+        $university = DB::table('university')->get();
+
+        return view('usersOrder', ['users' => $users, 'university' => $university]);
+    }
+    
+
 
 
     public function subject()
@@ -122,6 +143,78 @@ class HomeController extends Controller
         $users = DB::table('users')->select('users.id', 'first_name', 'last_name', 'email', 'country', 'city', 'phone', 'graduated')->where('role', '=', 'user')->where('status', '=', 'active')->get();
 
         return view('users', ['users' => $users]);
+    }
+
+    public function edit_user($id)
+    {
+        $user = DB::table('users')->where('id', $id)->get();
+
+        if($user[0]->role == 'admin')
+        {
+            return view('edit-admin', ['user' => $user]);
+        }
+        else
+        {
+            return view('edit-user', ['user' => $user]);
+        }
+    }
+
+    public function update_user(Request $request)
+    {
+        $role = DB::table('users')->where('id', $request->id)->get();
+
+        if($role[0]->role == 'admin')
+        {
+            if(isset($request->password))
+            {
+                DB::table('users')->where('id', $request->id)->update([
+                    'first_name' => $request->first_name,
+                    'last_name' => $request->last_name,
+                    'password' => $request->password
+                ]);
+            }
+            else
+            {
+                DB::table('users')->where('id', $request->id)->update([
+                    'first_name' => $request->first_name,
+                    'last_name' => $request->last_name
+                ]);
+            }
+
+        }
+        else if($role[0]->graduated == 1)
+        {
+            $request->validate([
+                'first_name' => 'required',
+                'last_name' => 'required',
+                'username' => 'required',
+                'phone' => 'required',
+                ''
+            ]);
+        }
+        else
+        {
+            DB::table('users')->where('id', $request->id)->update([
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'username' => $request->username,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'learning_type' => $request->learning_type,
+                'university_id' => $request->university_id,
+                'study_year' => $request->study_year
+
+            ]);
+        }
+
+        return redirect('/users');
+    }
+
+    public function delete_user($id)
+    {
+        DB::table('users')->where('id', $id)->delete();
+
+        return redirect('/users');
     }
 
     public function userFilter(Request $request)
@@ -187,6 +280,20 @@ class HomeController extends Controller
         $email = session('email');
 
         return view('profile', ['first_name' => $first_name, 'last_name' => $last_name, 'email' => $email]);
+    }
+
+    public function changePassword(Request $request)
+    {
+        $request->validate([
+            'password' => 'required|min:8'
+        ]);
+
+        DB::table('users')->where('email', session('email'))->update([
+            'password' => $request->password
+        ]);
+
+        return redirect('/profile');
+
     }
 
     public function newAdmin()
@@ -378,7 +485,7 @@ class HomeController extends Controller
     {
         $companies = DB::table('company')->get();
 
-        $copons = DB::table('copon')->select('copon.id', 'company.name AS company_name', 'copon.description')->join('company', 'company.id', '=', 'copon.company_id')->where('status', '=', 'active')->get();
+        $copons = DB::table('copon')->select('copon.id', 'company.name AS company_name', 'copon.description', 'copon.status')->join('company', 'company.id', '=', 'copon.company_id')->get();
 
         return view('/company', ['companies' => $companies, 'copons' => $copons]);
     }
@@ -429,7 +536,7 @@ class HomeController extends Controller
 
         if(!$request->file('logo'))
         {
-            DB::table('company')->update([
+            DB::table('company')->where('id', $request->id)->update([
                 'name' => $request->name
                 
             ]);
@@ -443,7 +550,7 @@ class HomeController extends Controller
 
             $file->move(public_path('\img'), $filename);
 
-            DB::table('company')->update([
+            DB::table('company')->where('id', $request->id)->update([
                 'name' => $request->name,
                 'logo' => $filename
             ]);
@@ -466,7 +573,8 @@ class HomeController extends Controller
 
     public function new_copon()
     {
-        $copons = DB::table('copon')->join('company', 'company.id', '=', 'copon.company_id')->where('status', '!=', 'requested')->get();
+
+        $copons = DB::table('copon')->select('copon.id', 'company.name AS company_name', 'copon.description', 'copon.status')->join('company', 'company.id', '=', 'copon.company_id')->get();
 
         $companies = DB::table('company')->get();
 
@@ -504,6 +612,35 @@ class HomeController extends Controller
 
     }
 
+    public function edit_copon(Request $request)
+    {
+        $coponInfo = DB::table('copon')->where('id', $request->id)->get();
+
+        $companies = DB::table('company')->get();
+
+        return view('edit-copon', ['coponInfo' => $coponInfo, 'companies' => $companies]);
+    }
+
+    public function update_copon(Request $request)
+    {
+
+        $request->validate([
+            'description' => 'required',
+            'company_id' => 'required',
+            'status' => 'required'
+        ]);
+
+        DB::table('copon')->where('id', $request->id)->update([
+            'description' => $request->description,
+            'company_id' => $request->company_id,
+            'status' => $request->status
+        ]);
+
+        return redirect('/company');
+        
+    }
+
+
     public function requested_copon()
     {
         $copons = DB::table('copon')->join('company', 'company.id', '=', 'copon.company_id')->where('status', '=', 'requested')->get();
@@ -515,7 +652,7 @@ class HomeController extends Controller
     {
         DB::table('copon')->where('id', '=', $id)->delete();
         
-        return redirect('/new-copon');
+        return redirect('/company');
     }
 
 
@@ -567,15 +704,100 @@ class HomeController extends Controller
         }
 
 
+        
+        $isText = $request->isText ?? 0;
+
         DB::table('advertisement')->insert([
             'description' => $request->description,
             'start_date' => date('Y-m-d'),
             'end_date' => $end_date,
-            'img' => $filename
+            'img' => $filename,
+            'isText' => $isText
         ]);
 
 
         return redirect('/advertisement');
+
+    }
+
+    public function edit_ad(Request $request)
+    {
+        $ad = DB::table('advertisement')->where('id', $request->id)->get();
+
+        if(Carbon::now() < Carbon::parse($ad[0]->end_date))
+        {
+            $end_date = Carbon::parse($ad[0]->end_date);
+    
+            $restDays = $end_date->diffInDays(Carbon::now()) + 1;
+            
+        }
+        else
+        {
+            $restDays = 0;
+        }
+
+        return view('edit-ads', ['ad' => $ad, 'days' => $restDays]);
+    }
+
+    public function update_ad(Request $request)
+    {
+        $request->validate([
+            'duration' => 'required'
+        ]);
+        
+        $description = $request->description ?? null;
+
+        $isText = $request->isText ?? 0;
+
+
+        if($request->duration > 0)
+        {
+            switch ($request->unit)
+            {
+                case 'day':
+                    $end_date = Carbon::now()->addDays($request->duration);
+                    break;
+
+                case 'month' :
+                    $end_date = Carbon::now()->addMonths($request->duration);
+                    break;
+
+                case 'year':
+                    $end_date = Carbon::now()->addYears($request->duration);
+                    break;
+
+                default:
+                    $end_date = Carbon::now()->addDays($request->duration);
+                    break;
+            }
+
+            DB::table('advertisement')->where('id', $request->id)->update([
+                'end_date' => $end_date
+            ]);
+
+        }
+
+
+        if($request->file('image'))
+        {
+
+            $file = $request->file('image');
+            $filename = date('Y-m-d H-i-s') . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('\img'), $filename);
+
+            DB::table('advertisement')->where('id', $request->id)->update([
+                'img' => $filename
+            ]);
+        }
+
+        DB::table('advertisement')->where('id', $request->id)->update([
+            'description' => $description,
+            'isText' => $isText,
+        ]);
+
+
+        return redirect('/advertisement');
+
 
     }
 

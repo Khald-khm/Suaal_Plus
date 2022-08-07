@@ -92,6 +92,7 @@ class QuestionController extends Controller
                                     ->join('subject', 'subject.id' , '=', 'question.subject_id')
                                     ->join('university_year', 'university_year.subject_id', '=', 'question.subject_id')
                                     ->orderBy('id', 'asc')
+                                    ->GROUPBY('question.id')
                                     ->get(array('question.id', 'university.name', 'question.title', 'question.learning_type', 'subject.name as subject_name', 'university_year.year as year'));
 
 
@@ -256,6 +257,8 @@ class QuestionController extends Controller
             $sub_chapter = null;
         }
 
+        date_default_timezone_set("Asia/Damascus");
+        
         DB::table('question')->insert([
             'title' => $request->title,
             'learning_type' => $request->learning_type,
@@ -264,7 +267,9 @@ class QuestionController extends Controller
             'library' => $library,
             'sub_chapter_id' => $sub_chapter,
             'year_time' => $year_time,
-            'type' => $request->type
+            'type' => $request->type,
+            'writer_id' => session('id'),
+            'create_date' => date('Y-m-d H:i:s')
         ]);
 
         $question = DB::table('question')->where('title', '=', $request->title)->ORDERBY('id', 'DESC')->limit(1)->get(array('id'));

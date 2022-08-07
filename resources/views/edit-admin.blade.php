@@ -19,11 +19,11 @@
 
     <!-- Custom styles for this template-->
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="css/style.css" type="text/css"/>
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}" type="text/css"/>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
@@ -33,7 +33,6 @@
 
 <body>
 
-   
     <div class="sidebarn">
         <div class="search">
             <form action="/action_page.php">
@@ -58,7 +57,7 @@
             طلبات الاشتراك </a>
         <a href="/users">
             <i class="fa fa-group" aria-hidden="true"></i>
-            المستخدمون </a>
+            المستخدمين </a>
         <a href="/profile">
             <i class="fa fa-address-card" aria-hidden="true"></i>
             الملف الشخصي </a>
@@ -76,6 +75,7 @@
             الاعلانات </a>
 
     </div>
+
     <div class="head">
         <div class="col-div-6">
             <p class="nav"> Dashboard</p>
@@ -88,63 +88,62 @@
 
                 <img src="img/icons8-admin-settings-male-50.png" class="pro-img" />
                 <p><a href="/profile">Raghad Alalem</a> </p>
-
+               
             </div>
         </div>
 
-        <div class="containerpageChart">
-            <div class="container-fluid">
-                <!-- Start Page Content -->
-                <div class="row">
-                    <!-- Column -->
-                    <div class="col-lg-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="card-two">
-                                    <header>
-                                        <div class="avatar">
-                                            <img src="img/icons8-admin-settings-male-50.png" alt="Allison Walker" />
-                                        </div>
-                                    </header>
+        <div class="containerpage">
 
-                                    <h3> @php print_r($first_name)  @endphp @php print_r($last_name) @endphp </h3>
-                                    
-                                    <div class="desc">
-                                        <div class="form-group" style="display: inline-block;width: auto;">
+            
+            <div class="tab-pane" id="settings" role="tabpanel">
+                <div class="card-body">
+                    <form class="form-horizontal form-material" action="/edit-user/{{ request('id') }}" method="post">
 
-                                            <label id="l1"> البريد الإلكتروني  </label></br>
-                                            <label >@php print_r($email) @endphp</label>
-                                            <!-- <a href="#" style="text-decoration: none;text-align:center">  تعديل <i  class="fa fa-edit" style="font-size: 25px;"></i> </a>  -->
+                        @csrf
+                        @method('PATCH')
 
-                                        </div>
-                                    </div>
-
-                                    <form action="/changePassword" method="post" enctype="multipart/form-data">
-
-                                        @csrf
-                                        @method('PATCH')
-
-                                        <div class="desc">
-                                            <div class="form-group" style="display: inline-block;width: auto;">
-
-                                                <label id="l1"> كلمة المرور  </label>
-                                                <input type="password" class="form-control-input" id="text" name="password" min="8"  required>
-                                                <label class="label-control" for="lname"></label><br>
-                                                <input type="submit" class="btn btn-primary" style="text-decoration: none;text-align:center" value="تعديل">  
-
-                                            </div>
-                                        </div>
-                                        
-                                    </form>
-                                    <div class="contacts">
-                                        <a href="/newAdmin" style="font-size:16px;text-decoration:none;display: flex;">اضافة ادمن جديد <i class="fa fa-plus"></i></a>
-                                       
-                                        <div class="clear"></div>
-                                    </div>
-                                </div>
+                        <div class="form-group">
+                            <label class="col-md-12"> الاسم الاول </label>
+                            <div class="col-md-12">
+                                <input type="text2" name="first_name" class="form-control form-control-line" value="{{ $user[0]->first_name }}" required>
                             </div>
                         </div>
-                    </div>
+                      
+                        <div class="form-group">
+                            <label class="col-md-12"> الاسم الاخير </label>
+                            <div class="col-md-12">
+                                <input type="text2" name="last_name" class="form-control form-control-line" value="{{ $user[0]->last_name }}" required>
+                            </div>
+                        </div>
+                      
+                        <div class="form-group">
+                            <label class="col-md-12"> البريد الالكتروني </label>
+                            <div class="col-md-12">
+                                <input type="text2" name="email" class="form-control form-control-line" value="{{ $user[0]->email }}" readonly>
+                            </div>
+                        </div>
+                      
+                        <div class="form-group">
+                            <label class="col-md-12">كلمة المرور</label>
+                            <div class="col-md-12">
+                                <input type="password" name="password" class="form-control form-control-line" >
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+
+                            @if(isset($error))
+                                {{ $error }}
+                            @endif
+
+                        </div>
+
+                        <div class="form-group" >
+                            <button type="submit" class="form-control-submit-button" id="addB">
+                                تعديل
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

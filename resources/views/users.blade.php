@@ -47,7 +47,7 @@
         <i class="fa fa-pie-chart icons" aria-hidden="true"></i>
         الاحصائيات
     </a>
-    <a href="/allQuestion"">
+    <a href="/allQuestion">
         <i class="fa fa-list" aria-hidden="true"></i>
     الأسئلة </a>
     <a href="/subject">
@@ -170,8 +170,8 @@
                                 
                                 <tr class="tr1">
 
-                                    <td class="td1" class="w3-center "> <a href="/delete-users/{{ $user->id }}" style="text-decoration: none;text-align:center">   <i  class="fa fa-trash-o" style="font-size: 25px;"></i> </a> </td>                
-                                    <td class="td1" class="w3-center "> <a href="/edit-users/{{ $user->id }}" style="text-decoration: none;text-align:center">   <i  class="fa fa-edit" style="font-size: 25px;"></i> </a> </td>
+                                    <td class="td1" class="w3-center "> <a href="/delete-user/{{ $user->id }}" style="text-decoration: none;text-align:center">   <i  class="fa fa-trash-o" style="font-size: 25px;"></i> </a> </td>                
+                                    <td class="td1" class="w3-center "> <a href="/edit-user/{{ $user->id }}" style="text-decoration: none;text-align:center">   <i  class="fa fa-edit" style="font-size: 25px;"></i> </a> </td>
                                     <td class="td-users" > @if($user->graduated == 0) طالب  @else  خريج  @endif </td>
                                     <td class="td-users"  class="w3-center "> {{ $user->phone }} </td>
                                     <td class="td-users" > {{ $user->city }} </td>

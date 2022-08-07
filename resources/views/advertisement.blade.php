@@ -95,112 +95,108 @@
 
         <div class="containerpage-privilege">
             <h2>الاعلانات</h2>
-<br><br>
+            <br><br>
 
-<section id="events" class="events">
-    <div class="container" data-aos="fade-up">
+            <section id="events" class="events">
+                <div class="container" data-aos="fade-up">
 
-      <div class="row">
+                    <div class="row">
 
-        @foreach($advertisements as $advertisement)
-         
-          <div class="col-md-6 d-flex align-items-stretch">
-              <div class="card">
-                <div class="card-img">
-                  <img src="{{ asset('img'.$advertisement->img) }}" alt="...">
-                </div>
-                <div class="card-body">
-                  <center>
-                  <h5 class="card-title"><a href="" style="text-decoration: none;"> {{ $advertisement->description}} </a></h5></center>
-                  <p> {{ $advertisement->start_date }} </p>
-                  <p> {{ $advertisement->end_date }} </p>
-                  <p class="card-text"><a href="/delete-advertisement/{{ $advertisement->id }}"><i class="fa fa-trash-o" aria-hidden="true"></i></a></p>
-                </div>
-              </div>
-            </div>
+                        @foreach($advertisements as $advertisement)
+                        
+                        <div class="col-md-6 d-flex align-items-stretch">
+                            <div class="card">
+                                <div class="card-img">
+                                    <img src="{{ asset('img/'.$advertisement->img) }}" alt="...">
+                                </div>
+                                <div class="card-body">
+                                    <center>
+                                    <h5 class="card-title"><a href="" style="text-decoration: none;"> {{ $advertisement->description}} </a></h5></center>
+                                    <p> {{ $advertisement->start_date }} </p>
+                                    <p> {{ $advertisement->end_date }} </p>
+                                    <p class="card-text"><a href="/delete-advertisement/{{ $advertisement->id }}"><i class="fa fa-trash-o" aria-hidden="true"></i></a></p>
+                                </div>
+                            </div>
+                        </div>
 
-        @endforeach
+                        @endforeach
 
-            <div class="col-md-6 d-flex align-items-stretch">
-                <div class="card">
-                    <div class="card-img">
-                    <img src="img/adv.jfif" alt="...">
+                        <div class="col-md-6 d-flex align-items-stretch">
+                            <div class="card">
+                                <div class="card-img">
+                                    <img src="img/adv.jfif" alt="...">
+                                </div>
+                                <div class="card-body">
+                                <center>
+                                <h5 class="card-title"><a href="" style="text-decoration: none;">اعلان-2</a></h5></center>
+                                <p>20-01-2022</p>
+                                <p>20-04-2022</p>
+                                <p class="card-text"><a href=""><i class="fa fa-trash-o" aria-hidden="true"></i></a></p>
+
+                            </div>
+                        </div>
                     </div>
-                    <div class="card-body">
-                    <center>
-                    <h5 class="card-title"><a href="" style="text-decoration: none;">اعلان-2</a></h5></center>
-                    <p>20-01-2022</p>
-                    <p>20-04-2022</p>
-                    <p class="card-text"><a href=""><i class="fa fa-trash-o" aria-hidden="true"></i></a></p>
-
-                    </div>
                 </div>
-            </div>
-
-
-</div>
+            
 <br><br><hr>
 <br>
 <h3 >اضافة اعلان جديد </h3>
 <br>
-<div class="tab-pane" id="settings" role="tabpanel" style="padding-top: 10%;">
-    <div class="card-body">
-        <form class="form-horizontal form-material" method="post" enctype="multipart/form-data">
+        <div class="tab-pane" id="settings" role="tabpanel" style="padding-top: 10%;">
+            <div class="card-body">
+                <form class="form-horizontal form-material" method="post" enctype="multipart/form-data">
 
-        @csrf
+                    @csrf
 
-            <div class="form-group">
-                <label class="col-md-12">عنوان الاعلان  </label>
-                <div class="col-md-12">
-                    <input type="text2" name="description"  class="form-control form-control-line">
-                </div>
+                    <div class="form-group">
+                        <label class="col-md-12">عنوان الاعلان  </label>
+                        <div class="col-md-12">
+                            <input type="text2" name="description"  class="form-control form-control-line">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" style="margin-right:1% ;">
+                        <select style="text-align:right;width:60%;color: #2f3d4a;" class="form-select" name="unit" aria-label="Defaultselect example">
+                            <option selected id="one" >مدة الإعلان  </option>
+                            <option value="day">يوم</option>
+                            <option value="month">شهر </option>
+                            <option value="year">سنة </option>
+                        </select>
+                    </div>                            
+                    
+                    <br>
+                    
+                    <div class="form-group">
+                        <label class="col-md-12" >المدة </label>
+                        <div class="col-md-12">
+                            <input type="number" class="form-control form-control-line" name="duration" >
+                        </div>
+                    </div>
+                        
+                
+                        
+                    <div class="form-group" style=" border-radius: 5px;   box-shadow: 0 5px 20px rgb(0 0 0 / 5%);">  
+                        <label style="font-size: 25px;padding-bottom: 30px;" name="img"><b>  ارفق صورة الاعلان  </b> </label>
+                        <br>
+                        <input type="file" name="image" >
+
+                    </div>
+
+                    <div class="form-group">
+                        <label for="isText">إعلان كتابي</label>
+                        <input type="checkbox" value="1" name="isText" id="isText">
+                    </div>
+
+
+                    <div class="form-group" >
+                        <button type="submit" class="form-control-submit-button" id="addB">
+                            إضافة
+                        </button>
+                    </div>
+
+                </form>
             </div>
-            <div class="form-group" style="margin-right:1% ;">
-                <select style="text-align:right;width:60%;color: #2f3d4a;"
-                class="form-select" name="unit"
-                aria-label="Default select example">
-                <option selected id="one" >مدة الإعلان  </option>
-                <option value="day">يوم</option>
-                <option value="month">شهر </option>
-                <option value="year">سنة </option>
-
-            </select>
-        
-        </div>                            <br>
-            <div class="form-group">
-                <label class="col-md-12" >المدة </label>
-                <div class="col-md-12">
-                    <input type="number" class="form-control form-control-line" name="duration" >
-                </div>
-            </div>
-         
- 
-           
- <div class="form-group" style=" border-radius: 5px;   box-shadow: 0 5px 20px rgb(0 0 0 / 5%);">  
-    <label style="font-size: 25px;padding-bottom: 30px;" name="img"><b>  ارفق صورة الاعلان  </b> </label>
-    <br>
-<!-- <input type="submit" name="Upload Video" id="submit"> -->
-<input type="file" name="image" >
-
-<button type="button" id="upload" class="btn btn-success" style="font-size: 21px;">
-    اضافة
-</button>
-
-</div>
-
-
-
-<div class="form-group" >
-
-
-<button type="submit" class="form-control-submit-button" id="addB">إضافة
-</button>
-</div>
-
-</form>
-</div>
-</div>
-
+        </div>
 
 <div>
     @if(isset($filename))
@@ -211,4 +207,5 @@
     @endif
 </div>
 
-            
+</body>
+</html>
