@@ -95,6 +95,14 @@ class QuestionController extends Controller
                                     ->GROUPBY('question.id')
                                     ->get(array('question.id', 'university.name', 'question.title', 'question.learning_type', 'subject.name as subject_name', 'university_year.year as year'));
 
+        // $all = DB::table('question')->select('question.id', 'university.name as name', 'question.title', 'question.learning_type', 'subject.name as subject_name', 'university_year.year as year')
+        //                             ->join('university', 'university_id', '=', 'question.university_id')
+        //                             ->join('subject', 'subject.id', '=', 'question.subject_id')
+        //                             ->leftJoin('university_year', 'university_year.subject_id', '=', 'question.subject_id')
+        //                             ->orderBy('question.id', 'asc')
+        //                             ->GROUPBY('question.id')
+        //                             ->get();
+
 
         $subjects = DB::table('subject')->get();
                                     

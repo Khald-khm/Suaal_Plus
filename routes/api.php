@@ -46,7 +46,7 @@ Route::post('/elite', [RequestController::class, 'elite']);
 
 
 
-Route::post('/Register', [AppRequestController::class, 'createUser']);
+Route::post('/createUser', [AppRequestController::class, 'createUser']);
 
 Route::post('/login', [AppRequestController::class, 'loginUser']);
 

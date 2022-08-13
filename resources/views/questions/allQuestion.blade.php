@@ -148,12 +148,12 @@
 
             @foreach($all as $row)
                 <tr >
-                    <td class="td1" class="w3-center "> <a href="{{ url('/detailQuestion/'. $all[$loop->index]->id) }}" style="text-decoration: none;text-align:center">   <i  class="fa fa-search" style="font-size: 25px;"></i> </a> </td>
-                    <td  class="td1" class="w3-center ">  {{ $all[$loop->index]->year }} </td>
-                    <td  class="td1" class="w3-center "> {{ $all[$loop->index]->learning_type }} </td>
-                    <td  class="td1" class="w3-center "> {{  $all[$loop->index]->name}} </td>
-                    <td  class="td1" class="w3-center "> {{ $all[$loop->index]->subject_name }} </td>
-                    <td   class="td1" class="w3-center "> {{ $all[$loop->index]->title }} </td>
+                    <td class="td1" class="w3-center "> <a href="{{ url('/detailQuestion/'. $row->id) }}" style="text-decoration: none;text-align:center">   <i  class="fa fa-search" style="font-size: 25px;"></i> </a> </td>
+                    <td  class="td1" class="w3-center ">  {{ $row->year }} </td>
+                    <td  class="td1" class="w3-center "> {{ $row->learning_type }} </td>
+                    <td  class="td1" class="w3-center "> {{  $row->name}} </td>
+                    <td  class="td1" class="w3-center "> {{ $row->subject_name }} </td>
+                    <td   class="td1" class="w3-center "> {{ $row->title }} </td>
                     <td   class="td1" class="w3-center "> {{ $loop->index + 1 }} </td>
 
                 </tr>

@@ -32,7 +32,8 @@ class AppRequestController extends Controller
         else
         {
             return response()->json([
-                'message' => 'This username already exist'
+                'message' => 'This username is already exist',
+                'username' => $request->username
             ]);
         }
 
@@ -46,7 +47,8 @@ class AppRequestController extends Controller
         else
         {
             return response()->json([
-                'message' => 'This email already exist'
+                'message' => 'This email is already exist',
+                'email' => $request->email
             ]);
         }
 
@@ -70,7 +72,8 @@ class AppRequestController extends Controller
         else
         {
             return response()->json([
-                'message' => 'This phone number already exist'
+                'message' => 'This phone number is already exist',
+                'phone' => $request->phone
             ]);
         }
 
