@@ -60,3 +60,6 @@ Route::middleware('auth:sanctum')->post('/createGroup',[AppRequestController::cl
 
 Route::middleware('auth:sanctum')->post('/joinGroup', [AppRequestController::class, 'joinGroup']);
 
+
+Route::middleware('auth:sanctum')->post('/individualQuiz', [AppRequestController::class, 'individualQuiz']);
+

@@ -52,7 +52,7 @@ Route::middleware([CheckLogin::class])->group(function(){
         
         Route::get('/detailQuestion/{id}', [QuestionController::class, 'details']);
         
-        Route::get('/deleteQuestion/{id}', [QuestionController::class, 'delete']);\
+        Route::get('/deleteQuestion/{id}', [QuestionController::class, 'delete']);
         
         
         

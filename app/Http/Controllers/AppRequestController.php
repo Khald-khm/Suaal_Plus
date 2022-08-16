@@ -371,4 +371,27 @@ class AppRequestController extends Controller
 
     }
 
+
+
+    public function individualQuiz(Request $request)
+    {
+        
+        $question = DB::table('question')->where('subject_id', $request->subject)->inRandomOrder()->limit($request->num)->get();
+
+        $questionIds = [];
+        
+        foreach($question as $quest)
+        {
+            array_push($questionIds, $quest->id);
+        }
+
+        $answers = DB::table('answer')->whereIn('question_id', $questionIds)->OrderBy('question_id')->get();
+
+
+        return response()->json([
+            'question' => $question,
+            'answers' => $answers,
+        ]);
+    }
+
 }
