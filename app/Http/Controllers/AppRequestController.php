@@ -153,6 +153,24 @@ class AppRequestController extends Controller
     }
 
 
+    public function checkUsername(Request $request)
+    {
+        $username = User::where('username', $request->username)->count();
+
+        if($username > 0)
+        {
+            return response()->json([
+                'message' => 'Username is already exist'
+            ]);
+        }
+        else
+        {
+            return response()->json([
+                'message' => 'Not Exist'
+            ]);
+        }
+    }
+
 
     public function loginUser(Request $request)
     {
@@ -373,10 +391,105 @@ class AppRequestController extends Controller
 
 
 
+
+    
     public function individualQuiz(Request $request)
     {
         
-        $question = DB::table('question')->where('subject_id', $request->subject)->inRandomOrder()->limit($request->num)->get();
+        $question = DB::table('question')->select('id', 'title', 'subject_id', 'learning_type', 'university_id', 'type', 'year_time')->where('subject_id', $request->subject);
+        
+    
+
+        if(isset($request->learning_type))
+        {
+            $question = $question->where('learning_type', $request->learning_type);
+        }
+
+        if(isset($request->university))
+        {
+            $question = $question->where('university_id', $request->university);
+        }
+
+        if(isset($request->type))
+        {
+            $question = $question->where('type', $request->type);
+
+            // $current = $question->where('type', $request->type);
+
+            // $count_em = $current->inRandomOrder()->limit($request->num)->get();
+
+            // $count_em = COUNT($count_em);
+
+            // if($count_em >= $request->num)
+            // {
+            //     $question = $current;
+            // }
+            // else
+            // {
+            //     $question = $question;
+            // }
+            
+        }
+
+        if(isset($request->year_time))
+        {
+            $current = $question;
+
+            $current_ques = $current->where('year_time', $request->year_time);
+
+            
+            // $current = $question->where('type', $request->type);
+
+            $count_em = $current_ques->count();
+
+            // $count_em = COUNT($count_em);
+
+            if($count_em > $request->num)
+            {
+                $question = $current_ques;
+
+                return response()->json([
+                    'condi' => 'if',
+                    'question' => $question->get()
+                ]);
+                
+            }
+            else if( COUNT($question->get()) < $request->num)
+            {
+                $question = $question;
+
+                return response()->json([
+                    'condi' => 'else',
+                    'count_em' => COUNT($current_ques->get()),
+                    'countThem' => COUNT($question->get()),
+                    'question' => $question->get()
+                ]);
+
+            }
+            else
+            {
+                return response()->json([
+                    'message' => 'fuck you'
+                ]);
+            }
+        }
+        
+        
+        
+        $question = $question->inRandomOrder()->get();
+
+        // if(COUNT($question) < 30)
+        // {
+        //     $limit = COUNT($question) - 30;
+
+        //     $anotherQuestion = DB::table('question')->where('subject_id', $request->subject)->inRandomOrder()->limit($limit)->get();
+
+        //     $quetion = array_push($question, $anotherQuestion);
+        // }
+
+
+        $countThem = COUNT($question);
+
 
         $questionIds = [];
         
@@ -389,6 +502,8 @@ class AppRequestController extends Controller
 
 
         return response()->json([
+            'count_em' => $count_em,
+            'countThem' => $countThem,
             'question' => $question,
             'answers' => $answers,
         ]);

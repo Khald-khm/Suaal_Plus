@@ -48,6 +48,8 @@ Route::post('/elite', [RequestController::class, 'elite']);
 
 Route::post('/createUser', [AppRequestController::class, 'createUser']);
 
+Route::post('/checkUsername', [AppRequestController::class, 'checkUsername']);
+
 Route::post('/login', [AppRequestController::class, 'loginUser']);
 
 
