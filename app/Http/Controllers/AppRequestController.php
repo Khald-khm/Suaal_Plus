@@ -85,7 +85,7 @@ class AppRequestController extends Controller
 
         $university_id = $request->university_id ?? null;
         
-        $graduated = $request->graduated ?? false;
+        $graduated = $request->graduated ?? 0;
         
         $carrer = $request->carrer ?? null;
         
@@ -149,24 +149,6 @@ class AppRequestController extends Controller
 
     }
 
-
-    public function checkUsername(Request $request)
-    {
-        $username = User::where('username', $request->username)->count();
-
-        if($username > 0)
-        {
-            return response()->json([
-                'message' => 'Username is already exist'
-            ]);
-        }
-        else
-        {
-            return response()->json([
-                'message' => 'Not Exist'
-            ]);
-        }
-    }
 
 
     public function loginUser(Request $request)
@@ -276,14 +258,28 @@ class AppRequestController extends Controller
 
     public function allGroups()
     {
-        $group = DB::table('groups')->select('groups.id', 'groups.name AS group_name', 'subject.name AS subject_name', 'groups.learning_type', 'university.name AS university_name', 'users.first_name', 'users.last_name', 'users_num', 'questions_num', 'type', 'from_time', 'to_time')
-                                    ->join('group_subjects', 'group_id', '=', 'groups.id')
+        $group = DB::table('groups')->select('groups.id', 'groups.name AS group_name', DB::raw('GROUP_CONCAT(subject.name SEPARATOR ",") AS subjects'), 'groups.learning_type', 'university.name AS university_name', 'admin_id', 'users.first_name', 'users.last_name', 'users_num', 'questions_num', 'type', 'from_time', 'to_time')
+                                    // ->join('group_subjects', 'group_id', '=', 'groups.id')
                                     ->join('users', 'users.id', '=', 'admin_id')
+                                    ->join('group_subjects', 'group_subjects.group_id', '=', 'groups.id')
                                     ->join('subject', 'subject.id', '=', 'group_subjects.subject_id')
                                     ->join('university', 'university.id', '=', 'groups.university_id')
                                     ->where('groups.status', 'active')
                                     ->where('from_time', '>=', date('Y-m-d H:i:s'))
+                                    ->groupBy('groups.id')
                                     ->get();
+
+
+                                    
+        // $group = DB::table('groups')->select('groups.id', 'groups.name AS group_name', DB::raw('GROUP_CONCAT(subject_id SEPARATOR ",") AS subjects'), 'groups.learning_type', 'university.name AS university_name', 'users.first_name', 'users.last_name', 'users_num', 'questions_num', 'type', 'from_time', 'to_time')
+        // // ->join('group_subjects', 'group_id', '=', 'groups.id')
+        // ->join('users', 'users.id', '=', 'admin_id')
+        // ->join('group_subjects', 'group_subjects.group_id', '=', 'groups.id')
+        // ->join('university', 'university.id', '=', 'groups.university_id')
+        // ->where('groups.status', 'active')
+        // ->where('from_time', '>=', date('Y-m-d H:i:s'))
+        // ->groupBy('groups.id')
+        // ->get();
 
 
         return response()->json([
@@ -300,6 +296,7 @@ class AppRequestController extends Controller
            'admin_id' => 'required',
            'questions_num' => 'required',
            'type' => 'required',
+           'subject' => 'required',
            'from_time' => 'required',
            'to_time' => 'required' 
         ]);
@@ -315,7 +312,9 @@ class AppRequestController extends Controller
         }
 
 
-        DB::table('groups')->insert([
+        
+        
+        $groupId = DB::table('groups')->insertGetId([
             'name' => $request->name,
             'learning_type' => $request->learning_type,
             'university_id' => $request->university_id,
@@ -328,10 +327,29 @@ class AppRequestController extends Controller
             'to_time' => $request->to_time,
             'status' => 'active'
         ]);
+        
+
+
+
+        // Insert subject to group_subjects table
+        $subjects = explode(',', $request->subject);
+
+        $data = [];
+
+        foreach($subjects as $subject)
+        {
+            array_push($data, ['group_id' => $groupId, 'subject_id' => $subject]);
+        }
+
+
+
+        // Insert subject into group_subjects
+        DB::table('group_subjects')->insert($data);
+
 
 
         return response()->json([
-            'message' => 'success'
+            'message' => 'success',
         ]);
 
 
@@ -389,6 +407,43 @@ class AppRequestController extends Controller
 
 
 
+
+
+    public function questionsNum(Request $request)
+    {
+        $request->validate([
+            'subject' => 'required',
+
+        ]);
+
+        $num = DB::table('question')->where('subject_id', $request->subject);
+
+
+        if(isset($request->learning_type))
+        {
+            $num = $num->where('learning_type', $request->learning_type);
+        }
+        if(isset($request->university))
+        {
+            $num = $num->where('university_id', $request->university);
+        }
+        if(isset($request->year_time))
+        {
+            $num = $num->where('year_time', $request->year_time);
+        }
+
+        $num = $num->count();
+
+
+        $num = substr_replace($num, '0', -1);
+
+        return response()->json([
+            'num' => $num
+            
+        ]);
+
+
+    }
     
     public function individualQuiz(Request $request)
     {
@@ -410,84 +465,19 @@ class AppRequestController extends Controller
         if(isset($request->type))
         {
             $question = $question->where('type', $request->type);
-
-            // $current = $question->where('type', $request->type);
-
-            // $count_em = $current->inRandomOrder()->limit($request->num)->get();
-
-            // $count_em = COUNT($count_em);
-
-            // if($count_em >= $request->num)
-            // {
-            //     $question = $current;
-            // }
-            // else
-            // {
-            //     $question = $question;
-            // }
             
         }
 
         if(isset($request->year_time))
         {
-            $current = $question;
-
-            $current_ques = $current->where('year_time', $request->year_time);
-
-            
-            // $current = $question->where('type', $request->type);
-
-            $count_em = $current_ques->count();
-
-            // $count_em = COUNT($count_em);
-
-            if($count_em > $request->num)
-            {
-                $question = $current_ques;
-
-                return response()->json([
-                    'condi' => 'if',
-                    'question' => $question->get()
-                ]);
-                
-            }
-            else if( COUNT($question->get()) < $request->num)
-            {
-                $question = $question;
-
-                return response()->json([
-                    'condi' => 'else',
-                    'count_em' => COUNT($current_ques->get()),
-                    'countThem' => COUNT($question->get()),
-                    'question' => $question->get()
-                ]);
-
-            }
-            else
-            {
-                return response()->json([
-                    'message' => 'fuck you'
-                ]);
-            }
+            $question = $question->where('year_time', $request->year_time);
         }
         
         
-        
-        $question = $question->inRandomOrder()->get();
-
-        // if(COUNT($question) < 30)
-        // {
-        //     $limit = COUNT($question) - 30;
-
-        //     $anotherQuestion = DB::table('question')->where('subject_id', $request->subject)->inRandomOrder()->limit($limit)->get();
-
-        //     $quetion = array_push($question, $anotherQuestion);
-        // }
+        $question = $question->inRandomOrder()->limit($request->num)->get();
 
 
-        $countThem = COUNT($question);
-
-
+        // Getting questions ids to get their answers
         $questionIds = [];
         
         foreach($question as $quest)
@@ -499,11 +489,127 @@ class AppRequestController extends Controller
 
 
         return response()->json([
-            'count_em' => $count_em,
-            'countThem' => $countThem,
+            'count' => count($question),
             'question' => $question,
             'answers' => $answers,
         ]);
     }
 
+
+
+
+
+
+    public function editProfile(Request $request)
+    {
+
+        $request->validate([
+            'user_id' => 'required'
+        ]);
+
+
+        $data = [];
+
+        if(isset($request->first_name))
+        {
+            // array_push($data, ['first_name' => $request->first_name]);
+
+            $data['first_name'] = $request->first_name;
+        }
+        if(isset($request->last_name))
+        {
+            $data['last_name'] = $request->last_name;
+            
+        }
+        if(isset($request->password))
+        {
+            if(strlen($request->password) < 8)
+            {
+                return response()->json([
+                    'message' => 'password should be more than 8 characters'
+                ]);
+            }
+            $data['password'] = Hash::make($request->password);
+            
+        }
+        if(isset($request->country))
+        {
+            $data['country'] = $request->country;
+            
+        }
+        if(isset($request->city))
+        {
+            $data['city'] = $request->city;
+            
+        }
+        if(isset($request->university))
+        {
+            $data['university_id'] = $request->university;
+            
+        }
+        if(isset($request->learning_type))
+        {
+            $data['learning_type'] = $request->learning_type;
+            
+        }
+        if(isset($request->study_year))
+        {
+            $data['study_year'] = $request->study_year;
+            
+        }
+        if(isset($request->graduated))
+        {
+            $data['graduated'] = $request->graduated;
+            
+        }
+        
+        
+        User::where('id', $request->user_id)->UPDATE($data);
+
+
+
+        // User::where('id', $request->id)->UPDATE([
+        //     'first_name' => $request->first_name,
+        //     'last_name' => $request->last_name,
+        //     'username' => $request->username,
+        // ]);
+
+        return response()->json([
+            'message' => 'Successful',
+        ]);
+    }
+
+
+
+
+
+    public function checkUsername(Request $request)
+    {
+        $username = User::where('username', $request->username)->count();
+
+        if($username > 0)
+        {
+            return response()->json([
+                'message' => 'Username is already exist'
+            ]);
+        }
+        else
+        {
+            return response()->json([
+                'message' => 'Not Exist'
+            ]);
+        }
+    }
+
+
+
+
+    public function subject()
+    {
+        $subject = DB::table('subject')->get();
+
+        return response()->json([
+            'subject' => $subject
+        ]);
+    }
 }

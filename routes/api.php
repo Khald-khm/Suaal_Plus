@@ -48,12 +48,14 @@ Route::post('/elite', [RequestController::class, 'elite']);
 
 Route::post('/createUser', [AppRequestController::class, 'createUser']);
 
-Route::post('/checkUsername', [AppRequestController::class, 'checkUsername']);
-
 Route::post('/login', [AppRequestController::class, 'loginUser']);
 
 
+
+
 Route::middleware('auth:sanctum')->post('/HomeScreen', [AppRequestController::class, 'HomeScreen']);
+
+
 
 
 Route::middleware('auth:sanctum')->get('/allGroups', [AppRequestController::class, 'allGroups']);
@@ -63,5 +65,21 @@ Route::middleware('auth:sanctum')->post('/createGroup',[AppRequestController::cl
 Route::middleware('auth:sanctum')->post('/joinGroup', [AppRequestController::class, 'joinGroup']);
 
 
+
+
+Route::middleware('auth:sanctum')->post('/questionsNum',[AppRequestController::class, 'questionsNum']);
+
 Route::middleware('auth:sanctum')->post('/individualQuiz', [AppRequestController::class, 'individualQuiz']);
 
+
+
+
+Route::middleware('auth:sanctum')->post('/editProfile', [AppRequestController::class, 'editProfile']);
+
+
+
+
+Route::post('/checkUsername', [AppRequestController::class, 'checkUsername']);
+
+
+Route::middleware('auth:sanctum')->get('/subject', [AppRequestController::class, 'subject']);
