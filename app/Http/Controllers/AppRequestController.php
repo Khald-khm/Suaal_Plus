@@ -36,19 +36,19 @@ class AppRequestController extends Controller
             ]);
         }
 
-        $checkEmail = User::where('email', $request->email)->count();
+        // $checkEmail = User::where('email', $request->email)->count();
 
         
-        if($checkEmail == 0)
-        {
-            $email = $request->email;
-        }
-        else
-        {
-            return response()->json([
-                'message' => 'This email is already exist',
-            ]);
-        }
+        // if($checkEmail == 0)
+        // {
+        //     $email = $request->email;
+        // }
+        // else
+        // {
+        //     return response()->json([
+        //         'message' => 'This email is already exist',
+        //     ]);
+        // }
 
         
         $password = Hash::make(trim($request->password)) ?? null;
@@ -141,9 +141,7 @@ class AppRequestController extends Controller
             'university_id' => $university_id,
             'study_year' => $study_year,
             'learning_type' => $learning_type,
-            'status' => $status,
-            'answered_questions' => '0',
-            'correct_questions' => '0'
+            'status' => $status
         ]);
 
 
@@ -488,10 +486,30 @@ class AppRequestController extends Controller
         $answers = DB::table('answer')->whereIn('question_id', $questionIds)->OrderBy('question_id')->get();
 
 
+
+        $groupedAnswers = [];
+
+        foreach($question as $quest)
+        {
+            $data = [];
+
+            foreach($answers as $answer)
+            {
+                if($quest->id == $answer->question_id)
+                {
+                    array_push($data, $answer);
+                }
+            }
+
+            $groupedAnswers[$quest->id] = $data;
+            // array_push($groupedAnswers, $data);
+
+        }
+
         return response()->json([
             'count' => count($question),
             'question' => $question,
-            'answers' => $answers,
+            'answers' => $groupedAnswers,
         ]);
     }
 
@@ -591,6 +609,26 @@ class AppRequestController extends Controller
         {
             return response()->json([
                 'message' => 'Username is already exist'
+            ]);
+        }
+        else
+        {
+            return response()->json([
+                'message' => 'Not Exist'
+            ]);
+        }
+    }
+    
+    
+    
+    public function checkPhone(Request $request)
+    {
+        $phone = User::where('phone', $request->phone)->count();
+
+        if($phone > 0)
+        {
+            return response()->json([
+                'message' => 'Phone is already exist'
             ]);
         }
         else
