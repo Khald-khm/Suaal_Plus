@@ -78,6 +78,10 @@ Route::middleware('auth:sanctum')->post('/editProfile', [AppRequestController::c
 
 
 
+Route::middleware('auth:sanctum')->post('/elite', [AppRequestController::class, 'elite']);
+
+
+
 
 Route::post('/checkUsername', [AppRequestController::class, 'checkUsername']);
 
@@ -86,3 +90,5 @@ Route::post('/checkPhone', [AppRequestController::class, 'checkPhone']);
 
 
 Route::middleware('auth:sanctum')->get('/subject', [AppRequestController::class, 'subject']);
+
+Route::middleware('auth:sanctum')->get('/university', [AppRequestController::class, 'university']);

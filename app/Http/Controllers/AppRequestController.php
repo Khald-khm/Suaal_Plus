@@ -502,7 +502,6 @@ class AppRequestController extends Controller
             }
 
             $groupedAnswers[$quest->id] = $data;
-            // array_push($groupedAnswers, $data);
 
         }
 
@@ -600,6 +599,23 @@ class AppRequestController extends Controller
 
 
 
+    public function elite(Request $request)
+    {
+        $elite = DB::table('users')->where('role', '=', 'user')->orderBy('correct_questions', 'DESC')->get();
+
+        // $userOrder = $elite->search(function($user_id){
+        //     return $user_id->id == $request->id;
+        // });
+
+        return response()->json([
+            // 'userOrder' => $userOrder,
+            'elite' => $elite
+        ]);
+    }
+
+
+
+
 
     public function checkUsername(Request $request)
     {
@@ -648,6 +664,15 @@ class AppRequestController extends Controller
 
         return response()->json([
             'subject' => $subject
+        ]);
+    }
+
+    public function university()
+    {
+        $university = DB::table('university')->get();
+
+        return response()->json([
+            'university' => $university
         ]);
     }
 }

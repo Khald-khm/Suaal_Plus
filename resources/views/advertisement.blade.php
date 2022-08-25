@@ -114,28 +114,17 @@
                                     <h5 class="card-title"><a href="" style="text-decoration: none;"> {{ $advertisement->description}} </a></h5></center>
                                     <p> {{ $advertisement->start_date }} </p>
                                     <p> {{ $advertisement->end_date }} </p>
-                                    <p class="card-text"><a href="/delete-advertisement/{{ $advertisement->id }}"><i class="fa fa-trash-o" aria-hidden="true"></i></a></p>
+                                    <p class="card-text">
+                                        <a href="/edit-ads/{{ $advertisement->id }}"><i  class="fa fa-edit m-2" aria-hidden="true"></i></i></a>
+                                        <a href="/delete-advertisement/{{ $advertisement->id }}"><i class="fa fa-trash-o m-2" aria-hidden="true"></i></a>
+                                    </p>
                                 </div>
                             </div>
                         </div>
 
                         @endforeach
 
-                        <div class="col-md-6 d-flex align-items-stretch">
-                            <div class="card">
-                                <div class="card-img">
-                                    <img src="img/adv.jfif" alt="...">
-                                </div>
-                                <div class="card-body">
-                                <center>
-                                <h5 class="card-title"><a href="" style="text-decoration: none;">اعلان-2</a></h5></center>
-                                <p>20-01-2022</p>
-                                <p>20-04-2022</p>
-                                <p class="card-text"><a href=""><i class="fa fa-trash-o" aria-hidden="true"></i></a></p>
-
-                            </div>
-                        </div>
-                    </div>
+                        
                 </div>
             
 <br><br><hr>
