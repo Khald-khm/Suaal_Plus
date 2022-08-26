@@ -148,7 +148,6 @@ class AppRequestController extends Controller
     }
 
 
-
     public function loginUser(Request $request)
     {
         $request->validate([
@@ -201,6 +200,8 @@ class AppRequestController extends Controller
         }
     }
 
+    
+
 
     public function HomeScreen(Request $request)
     {
@@ -251,6 +252,79 @@ class AppRequestController extends Controller
             'subject' => $subject
         ]);
     }
+
+
+
+
+    public function individualQuiz(Request $request)
+    {
+        
+        $question = DB::table('question')->select('id', 'title', 'subject_id', 'learning_type', 'university_id', 'type', 'year_time')->where('subject_id', $request->subject);
+        
+    
+
+        if(isset($request->learning_type))
+        {
+            $question = $question->where('learning_type', $request->learning_type);
+        }
+
+        if(isset($request->university))
+        {
+            $question = $question->where('university_id', $request->university);
+        }
+
+        if(isset($request->type))
+        {
+            $question = $question->where('type', $request->type);
+            
+        }
+
+        if(isset($request->year_time))
+        {
+            $question = $question->where('year_time', $request->year_time);
+        }
+        
+        
+        $question = $question->inRandomOrder()->limit($request->num)->get();
+
+
+        // Getting questions ids to get their answers
+        $questionIds = [];
+        
+        foreach($question as $quest)
+        {
+            array_push($questionIds, $quest->id);
+        }
+
+        $answers = DB::table('answer')->whereIn('question_id', $questionIds)->OrderBy('question_id')->get();
+
+
+
+        $groupedAnswers = [];
+
+        foreach($question as $quest)
+        {
+            $data = [];
+
+            foreach($answers as $answer)
+            {
+                if($quest->id == $answer->question_id)
+                {
+                    array_push($data, $answer);
+                }
+            }
+
+            $groupedAnswers[$quest->id] = $data;
+
+        }
+
+        return response()->json([
+            'count' => count($question),
+            'question' => $question,
+            'answers' => $groupedAnswers,
+        ]);
+    }
+
 
 
 
@@ -353,7 +427,6 @@ class AppRequestController extends Controller
 
     }
 
-
     public function joinGroup(Request $request)
     {
         $request->validate([
@@ -402,115 +475,38 @@ class AppRequestController extends Controller
 
     }
 
-
-
-
-
-
-    public function questionsNum(Request $request)
+    public function exitGroup(Request $request)
     {
         $request->validate([
-            'subject' => 'required',
-
+            'group_id' => 'required',
+            'user_id' => 'required',
         ]);
 
-        $num = DB::table('question')->where('subject_id', $request->subject);
-
-
-        if(isset($request->learning_type))
-        {
-            $num = $num->where('learning_type', $request->learning_type);
-        }
-        if(isset($request->university))
-        {
-            $num = $num->where('university_id', $request->university);
-        }
-        if(isset($request->year_time))
-        {
-            $num = $num->where('year_time', $request->year_time);
-        }
-
-        $num = $num->count();
-
-
-        $num = substr_replace($num, '0', -1);
+        
+        DB::table('group_users')->where('group_id', $request->group_id)
+                                ->where('user_id', $request->user_id)
+                                ->delete();
 
         return response()->json([
-            'num' => $num
-            
+            'message' => 'success'
         ]);
 
-
     }
-    
-    public function individualQuiz(Request $request)
+
+    public function deleteGroup(Request $request)
     {
-        
-        $question = DB::table('question')->select('id', 'title', 'subject_id', 'learning_type', 'university_id', 'type', 'year_time')->where('subject_id', $request->subject);
-        
-    
+        $request->validate([
+            'group_id' => 'required'
+        ]);
 
-        if(isset($request->learning_type))
-        {
-            $question = $question->where('learning_type', $request->learning_type);
-        }
-
-        if(isset($request->university))
-        {
-            $question = $question->where('university_id', $request->university);
-        }
-
-        if(isset($request->type))
-        {
-            $question = $question->where('type', $request->type);
-            
-        }
-
-        if(isset($request->year_time))
-        {
-            $question = $question->where('year_time', $request->year_time);
-        }
-        
-        
-        $question = $question->inRandomOrder()->limit($request->num)->get();
-
-
-        // Getting questions ids to get their answers
-        $questionIds = [];
-        
-        foreach($question as $quest)
-        {
-            array_push($questionIds, $quest->id);
-        }
-
-        $answers = DB::table('answer')->whereIn('question_id', $questionIds)->OrderBy('question_id')->get();
-
-
-
-        $groupedAnswers = [];
-
-        foreach($question as $quest)
-        {
-            $data = [];
-
-            foreach($answers as $answer)
-            {
-                if($quest->id == $answer->question_id)
-                {
-                    array_push($data, $answer);
-                }
-            }
-
-            $groupedAnswers[$quest->id] = $data;
-
-        }
+        DB::table('groups')->where('id', $request->group_id)->delete();
 
         return response()->json([
-            'count' => count($question),
-            'question' => $question,
-            'answers' => $groupedAnswers,
+            'message' => 'success'
         ]);
     }
+
+
 
 
 
@@ -599,9 +595,9 @@ class AppRequestController extends Controller
 
 
 
-    public function elite(Request $request)
+    public function elite()
     {
-        $elite = DB::table('users')->where('role', '=', 'user')->orderBy('correct_questions', 'DESC')->get();
+        $elite = DB::table('users')->select('id', 'first_name', 'last_name', 'username', 'correct_questions')->where('role', '=', 'user')->orderBy('correct_questions', 'DESC')->get();
 
         // $userOrder = $elite->search(function($user_id){
         //     return $user_id->id == $request->id;
@@ -655,6 +651,44 @@ class AppRequestController extends Controller
         }
     }
 
+
+     
+    public function questionsNum(Request $request)
+    {
+        $request->validate([
+            'subject' => 'required',
+
+        ]);
+
+        $num = DB::table('question')->where('subject_id', $request->subject);
+
+
+        if(isset($request->learning_type))
+        {
+            $num = $num->where('learning_type', $request->learning_type);
+        }
+        if(isset($request->university))
+        {
+            $num = $num->where('university_id', $request->university);
+        }
+        if(isset($request->year_time))
+        {
+            $num = $num->where('year_time', $request->year_time);
+        }
+
+        $num = $num->count();
+
+
+        $num = substr_replace($num, '0', -1);
+
+        return response()->json([
+            'num' => $num
+            
+        ]);
+
+
+    }
+    
 
 
 
