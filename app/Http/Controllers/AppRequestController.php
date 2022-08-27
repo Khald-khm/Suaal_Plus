@@ -326,6 +326,36 @@ class AppRequestController extends Controller
     }
 
 
+    public function quizResult(Request $request)
+    {
+
+        $correctQuestion = [61, 62, 63];
+
+        $wrongQuestion = [71, 72, 73];
+
+
+        DB::table('question')->whereIn('id', $correctQuestion)->UPDATE([
+            'asked_count' => DB::raw('asked_count + 1'),
+            'correct_times' => DB::raw('correct_times + 1')
+        ]);
+
+        DB::table('question')->whereIn('id', $wrongQuestion)->UPDATE([
+            'asked_count' => DB::raw('asked_count + 1')
+        ]);
+
+        // DB::table('users')->where('id', $request->user_id)->UPDATE([
+        //     'answered_questions' => DB::raw('answered_questions + '. $questionsCount),
+        //     'correct_questions' => DB::raw('correct_questions + '. $correctCount)
+        // ]);
+
+
+
+        return response()->json([
+            'message' => 'sucess'
+        ]);
+    }
+
+
 
 
     public function allGroups()
@@ -427,6 +457,65 @@ class AppRequestController extends Controller
 
     }
 
+    public function editGroup(Request $request)
+    {
+        $request->validate([
+            'group_id' => 'required'
+        ]);
+
+
+
+        $info = [];
+
+        if(isset($request->name))
+        {
+            $info['name'] = $request->name;
+        }
+        if(isset($request->learning_type))
+        {
+            $info['learning_type'] = $request->learning_type;
+        }
+        if(isset($request->university_id))
+        {
+            $info['university_id'] = $request->university_id;
+        }
+        if(isset($request->questions_num))
+        {
+            $info['questions_num'] = $request->questions_num;
+        }
+        if(isset($request->type))
+        {
+            if($request->type == 'private')
+            {
+                $request->validate([
+                    'password' => 'required'
+                ]);
+
+                $info['type'] = $request->type;
+
+                $info['password'] = Hash::make($request->password);
+            }
+            else
+            {
+                $info['type'] = $request->type;
+
+                $info['password'] = null;
+            }
+        }
+        if(isset($request->from_time))
+        {
+            $info['from_time'] = $request->from_time;
+        }
+        if(isset($request->to_time))
+        {
+            $info['to_time'] = $request->to_time;
+        }
+
+        return reponse()->json([
+            'message' => 'success'
+        ]);
+    }
+
     public function joinGroup(Request $request)
     {
         $request->validate([
@@ -508,6 +597,35 @@ class AppRequestController extends Controller
 
 
 
+
+
+    public function copon()
+    {
+        $copons = DB::table('copon')->get();
+
+        return response()->json([
+            'copons' => $copons
+        ]);
+    }
+
+    public function userCopon(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required'
+        ]);
+
+
+        $copons = DB::table('copon_request')->where('copon_request.user_id', $request->user_id)
+                                            ->where('status', 'active')
+                                            ->join('copon', 'copon.id', '=', 'copon_id')
+                                            ->get();
+
+
+        return response()->json([
+            'copons' => $copons
+        ]);
+
+    }
 
 
 
@@ -597,7 +715,7 @@ class AppRequestController extends Controller
 
     public function elite()
     {
-        $elite = DB::table('users')->select('id', 'first_name', 'last_name', 'username', 'correct_questions')->where('role', '=', 'user')->orderBy('correct_questions', 'DESC')->get();
+        $elite = DB::table('users')->select('id', 'first_name', 'last_name', 'username', 'study_year', 'correct_questions')->where('role', '=', 'user')->orderBy('correct_questions', 'DESC')->get();
 
         // $userOrder = $elite->search(function($user_id){
         //     return $user_id->id == $request->id;
