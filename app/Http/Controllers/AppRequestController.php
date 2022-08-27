@@ -36,19 +36,19 @@ class AppRequestController extends Controller
             ]);
         }
 
-        // $checkEmail = User::where('email', $request->email)->count();
+        $checkEmail = User::where('email', $request->email)->count();
 
         
-        // if($checkEmail == 0)
-        // {
-        //     $email = $request->email;
-        // }
-        // else
-        // {
-        //     return response()->json([
-        //         'message' => 'This email is already exist',
-        //     ]);
-        // }
+        if($checkEmail == 0)
+        {
+            $email = $request->email;
+        }
+        else
+        {
+            return response()->json([
+                'message' => 'This email is already exist',
+            ]);
+        }
 
         
         $password = Hash::make(trim($request->password)) ?? null;
