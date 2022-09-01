@@ -346,7 +346,7 @@ class AppRequestController extends Controller
 
 
         return response()->json([
-            'message' => 'sucess'
+            'message' => 'success'
         ]);
     }
 
@@ -632,8 +632,8 @@ class AppRequestController extends Controller
 
 
         return response()->json([
+            'message' => 'success',
             'round' => $round,
-            'questions' => $entries,
         ]);
 
     }
@@ -720,6 +720,10 @@ class AppRequestController extends Controller
             'round_id' => $round,
             'user_id' => $user_id,
             'mark' => COUNT($correctQuestions)
+        ]);
+
+        return response()->json([
+            'message' => 'success'
         ]);
         
     }
