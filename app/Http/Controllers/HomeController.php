@@ -194,6 +194,26 @@ class HomeController extends Controller
         }
         else
         {
+            $first_name = $request->first_name ?? null;
+
+            $last_name = $request->last_name ?? null;
+
+            $email = $request->email ?? null;
+
+            $birth_date = $request->birth_date ?? null;
+
+            $countr = $request->country ?? null;
+
+            $city = $request->city ?? null;
+
+            $learning_type = $request->learning_type ?? null;
+
+            $university = $request->university ?? null;
+
+            $graduated = $request->graduated ?? null;
+
+            $study_year = $request->study_year ?? null;
+
             DB::table('users')->where('id', $request->id)->update([
                 'first_name' => $request->first_name,
                 'last_name' => $request->last_name,
@@ -704,6 +724,15 @@ class HomeController extends Controller
         }
 
 
+
+        $phone = $request->phone ?? null;
+
+        $whats_app = $request->whats_app ?? null;
+
+        $telegram = $request->telegram ?? null;
+
+        $facebook = $request->facebook ?? null;
+
         
         $isText = $request->isText ?? 0;
 
@@ -712,6 +741,10 @@ class HomeController extends Controller
             'start_date' => date('Y-m-d'),
             'end_date' => $end_date,
             'img' => $filename,
+            'phone' => $phone,
+            'whats_app' => $whats_app,
+            'telegram' => $telegram,
+            'facebook' => $facebook,
             'isText' => $isText
         ]);
 
@@ -778,6 +811,16 @@ class HomeController extends Controller
         }
 
 
+            $phone = $request->phone ?? null;
+
+            $whats_app = $request->whats_app ?? null;
+
+            $facebook = $request->facebook ?? null;
+            
+            $telegram  = $request->telegram ?? null;
+
+
+
         if($request->file('image'))
         {
 
@@ -792,6 +835,10 @@ class HomeController extends Controller
 
         DB::table('advertisement')->where('id', $request->id)->update([
             'description' => $description,
+            'phone' => $phone,
+            'whats_app' => $whats_app,
+            'facebook' => $facebook,
+            'telegram' => $telegram,
             'isText' => $isText,
         ]);
 

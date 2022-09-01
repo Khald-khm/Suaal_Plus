@@ -111,9 +111,13 @@
                                 </div>
                                 <div class="card-body">
                                     <center>
-                                    <h5 class="card-title"><a href="" style="text-decoration: none;"> {{ $advertisement->description}} </a></h5></center>
-                                    <p> {{ $advertisement->start_date }} </p>
-                                    <p> {{ $advertisement->end_date }} </p>
+                                    <h5 class="card-title">{{ $advertisement->description}} </h5></center>
+                                    <p> هاتف : {{ $advertisement->phone ?? '-'}}</p>
+                                    <p> واتس : {{ $advertisement->whats_app ?? '-'}} </p>
+                                    <p> فيسبوك : {{ $advertisement->facebook ?? '-'}} </p>
+                                    <p> تلغرام : {{ $advertisement->telegram ?? '-'}} </p>
+                                    <p> تاريخ النشر : {{ $advertisement->start_date ?? '-'}}  </p>
+                                    <p>  تاريخ الانتهاء :  {{ $advertisement->end_date ?? '-'}} </p>
                                     <p class="card-text">
                                         <a href="/edit-ads/{{ $advertisement->id }}"><i  class="fa fa-edit m-2" aria-hidden="true"></i></i></a>
                                         <a href="/delete-advertisement/{{ $advertisement->id }}"><i class="fa fa-trash-o m-2" aria-hidden="true"></i></a>
@@ -144,21 +148,50 @@
                         </div>
                     </div>
                     
-                    <div class="form-group" style="margin-right:1% ;">
-                        <select style="text-align:right;width:60%;color: #2f3d4a;" class="form-select" name="unit" aria-label="Defaultselect example">
-                            <option selected id="one" >مدة الإعلان  </option>
-                            <option value="day">يوم</option>
-                            <option value="month">شهر </option>
-                            <option value="year">سنة </option>
-                        </select>
-                    </div>                            
-                    
-                    <br>
                     
                     <div class="form-group">
                         <label class="col-md-12" >المدة </label>
-                        <div class="col-md-12">
+                        <div  class="input-group">
+                            
+                            <select style="text-align:right;color: #2f3d4a;" class="form-select" name="unit" aria-label="Defaultselect example">
+                                <option selected id="one" >مدة الإعلان  </option>
+                                <option value="day">يوم</option>
+                                <option value="month">شهر </option>
+                                <option value="year">سنة </option>
+                            </select>
+                            
                             <input type="number" class="form-control form-control-line" name="duration" >
+                        </div>
+                    </div>  
+
+
+                    
+                    
+                    <div class="form-group">
+                        <label class="col-md-12" > هاتف </label>
+                        <div class="col-md-12">
+                            <input type="text2" class="form-control form-control-line" name="phone" >
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="col-md-12" > واتس </label>
+                        <div class="col-md-12">
+                            <input type="text2" class="form-control form-control-line" name="whats_app" >
+                        </div>
+                    </div>
+                        
+                    <div class="form-group">
+                        <label class="col-md-12" > تلغرام </label>
+                        <div class="col-md-12">
+                            <input type="text2" class="form-control form-control-line" name="telegram" >
+                        </div>
+                    </div>
+                        
+                    <div class="form-group">
+                        <label class="col-md-12" > فيسبوك </label>
+                        <div class="col-md-12">
+                            <input type="text2" class="form-control form-control-line" name="facebook" >
                         </div>
                     </div>
                         
@@ -173,7 +206,7 @@
 
                     <div class="form-group">
                         <label for="isText">إعلان كتابي</label>
-                        <input type="checkbox" value="1" name="isText" id="isText">
+                        <input type="checkbox" class="form-check-input" value="1" name="isText" id="isText">
                     </div>
 
 

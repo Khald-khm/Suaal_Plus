@@ -52,6 +52,14 @@ Route::middleware('auth:sanctum')->post('/exitGroup', [AppRequestController::cla
 
 Route::middleware('auth:sanctum')->post('/deleteGroup', [AppRequestController::class, 'deleteGroup']);
 
+Route::middleware('auth:sanctum')->post('/createRound', [AppRequestController::class, 'createRound']);
+
+Route::middleware('auth:sanctum')->post('/startRound', [AppRequestController::class, 'startRound']);
+
+Route::middleware('auth:sanctum')->post('/groupResult', [AppRequestController::class, 'groupResult']);
+
+Route::middleware('auth:sanctum')->post('/groupHistory', [AppRequestController::class, 'groupHistory']);
+
 
 
 Route::middleware('auth:sanctum')->get('/elite', [AppRequestController::class, 'elite']);

@@ -827,4 +827,10 @@ $('.filteringUser').on('change', function(){
         }
     })
 
+});
+
+
+
+$('#birth_date').document('on', 'chnage', function(){
+    alert('changed');
 })

@@ -118,6 +118,13 @@
 
                         <div class="form-group" style="display: inline-block">
 
+                            <label id="l1"> رقم الموبايل </label>
+                            <input type="text" class="form-control-input" id="text" name="phone" value="{{ $user[0]->phone }}" required>
+                            <label class="label-control" for="lname"></label>
+                        </div>
+
+                        <div class="form-group" style="display: inline-block">
+
                             <label id="l1"> اسم المستخدم </label>
                             <input type="text" class="form-control-input" id="text" name="username" value="{{ $user[0]->username }}" required readonly>
                             <label class="label-control" for="lname"></label>
@@ -132,56 +139,11 @@
                         <div class="form-group" style="display: inline-block">
 
                             <label id="l1"> تاريخ الميلاد  </label>
-                            <input type="date" class="form-control-input" id="text" name="birth_date">
+                            <input type="text2" class="form-control-input" id="birth_date" name="birth_date">
                             <label class="label-control" for="lname"></label>
                         </div>
 
-                        <div class="form-group" style="display: inline-block">
-
-                            <label id="l1"> رقم الموبايل </label>
-                            <input type="text" class="form-control-input" id="text" name="phone" value="{{ $user[0]->phone }}" required>
-                            <label class="label-control" for="lname"></label>
-                        </div>
-                        <div class="form-group" style="display: inline-block">
-
-                            <label id="l1"> المحافظة</label>
-                            <input type="text" class="form-control-input" id="text" name="city" value="{{ $user[0]->city }}" required>
-                            <label class="label-control" for="lname"></label>
-                        </div>
-                        <select style="text-align:right;width:370px;color: #2f3d4a;
-                        " class="form-select"
-                            aria-label="Default select example" name="learning_type">
-                            <option selected id="one" > نوع التعليم </option>
-                            <option value="عام" @if($user[0]->learning_type == "عام" ) selected @endif>عام</option>
-                            <option value="افتراضي" @if($user[0]->learning_type == "افتراضي" ) selected @endif>افتراضي</option>
-                            <option value="خاص" @if($user[0]->learning_type == "خاص" ) selected @endif>خاص</option>
-                            <option value="مفتوح" @if($user[0]->learning_type == "مفتوح" ) selected @endif>مفتوح</option>
-
-
-                        </select><br>
-                        <select style="text-align:right;width:370px;color: #2f3d4a;
-                        " class="form-select"
-                            aria-label="Default select example" name="graduated">
-                            <option selected id="one" > الحالة </option>
-                            <option value="0" @if($user[0]->graduated == "0" ) selected @endif>طالب</option>
-                            <option value="1" @if($user[0]->graduated == "1" ) selected @endif>خريج</option>
-                            
-
-
-                        </select><br>
-                        <select style="text-align:right;width:370px;color: #2f3d4a;
-                        " class="form-select"
-                            aria-label="Default select example" name="university">
-                            <option selected id="one" > الجامعة </option>
-                            <option value="1">دمشق</option>
-                            <option value="دمشق">حلب</option>
-                            
-
-
-                        </select><br>
-                        <select style="text-align: right;width:370px;color: #2f3d4a;
-                        " class="form-select"
-                            aria-label="Default select example" name="country">
+                        <select style="text-align: right;width:370px;color: #2f3d4a;" class="form-select" aria-label="Default select example" name="country">
                             <option selected id="one"> البلد </option>
                             <option value="أفغانستان">أفغانستان</option>
                             <option value="ألبانيا">ألبانيا</option>
@@ -378,15 +340,42 @@
                             <option value="زامبيا">زامبيا</option>
                             <option value="زيمبابوي">زيمبابوي</option>
                         
-
-
                         </select>
 
-                  <br>
+                        <div class="form-group" style="display: inline-block">
 
-                        <select style="text-align: right;width:370px;color: #2f3d4a;"
-class="form-select"
-                            aria-label="Default select example" name="study_year">
+                            <label id="l1"> المحافظة</label>
+                            <input type="text" class="form-control-input" id="text" name="city" value="{{ $user[0]->city }}" required>
+                            <label class="label-control" for="lname"></label>
+                        </div>
+                        <select style="text-align:right;width:370px;color: #2f3d4a;" class="form-select" aria-label="Default select example" name="graduated">
+                            <option selected id="one" > الحالة </option>
+                            <option value="0" @if($user[0]->graduated == "0" ) selected @endif>طالب</option>
+                            <option value="1" @if($user[0]->graduated == "1" ) selected @endif>خريج</option>
+                            
+                        </select><br>
+                        <select style="text-align:right;width:370px;color: #2f3d4a;
+                        " class="form-select"
+                            aria-label="Default select example" name="learning_type">
+                            <option selected id="one" > نوع التعليم </option>
+                            <option value="عام" @if($user[0]->learning_type == "عام" ) selected @endif>عام</option>
+                            <option value="افتراضي" @if($user[0]->learning_type == "افتراضي" ) selected @endif>افتراضي</option>
+                            <option value="خاص" @if($user[0]->learning_type == "خاص" ) selected @endif>خاص</option>
+                            <option value="مفتوح" @if($user[0]->learning_type == "مفتوح" ) selected @endif>مفتوح</option>
+
+
+                        </select><br>
+
+                        <select style="text-align:right;width:370px;color: #2f3d4a;" class="form-select" aria-label="Default select example" name="university">
+                            <option selected id="one" > الجامعة </option>
+                            <option value="1">دمشق</option>
+                            <option value="2">حلب</option>
+
+                        </select><br>
+                        
+
+
+                        <select style="text-align: right;width:370px;color: #2f3d4a;" class="form-select" aria-label="Default select example" name="study_year">
                             <option selected id="one"> السنة </option>
                             <option value="1" @if($user[0]->study_year == "1" ) selected @endif>الاولى</option>
                             <option value="2" @if($user[0]->study_year == "2" ) selected @endif>الثانية</option>
@@ -676,3 +665,8 @@ class="form-select"
 
                         
                 </form>
+
+            <script src="{{ asset('js/jquery.min.js') }}"></script>
+            <script src="{{ asset('js/main.js') }}"></script>
+</body>
+</html>

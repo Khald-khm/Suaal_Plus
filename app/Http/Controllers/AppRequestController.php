@@ -64,7 +64,7 @@ class AppRequestController extends Controller
         $checkPhone = User::where('phone', $request->phone)->count();
 
         if($checkPhone == 0)
-        {        
+        {
             $phone = $request->phone;
         }
         else
@@ -296,7 +296,7 @@ class AppRequestController extends Controller
             array_push($questionIds, $quest->id);
         }
 
-        $answers = DB::table('answer')->whereIn('question_id', $questionIds)->OrderBy('question_id')->get();
+        $answers = DB::table('answer')->whereIn('question_id', $questionIds)->inRandomOrder()->get();
 
 
 
@@ -329,9 +329,9 @@ class AppRequestController extends Controller
     public function quizResult(Request $request)
     {
 
-        $correctQuestion = [61, 62, 63];
+        $correctQuestion = explode(',', $request->correctQuestion);
 
-        $wrongQuestion = [71, 72, 73];
+        $wrongQuestion = explode(',', $request->wrongQuestion);
 
 
         DB::table('question')->whereIn('id', $correctQuestion)->UPDATE([
@@ -342,11 +342,6 @@ class AppRequestController extends Controller
         DB::table('question')->whereIn('id', $wrongQuestion)->UPDATE([
             'asked_count' => DB::raw('asked_count + 1')
         ]);
-
-        // DB::table('users')->where('id', $request->user_id)->UPDATE([
-        //     'answered_questions' => DB::raw('answered_questions + '. $questionsCount),
-        //     'correct_questions' => DB::raw('correct_questions + '. $correctCount)
-        // ]);
 
 
 
@@ -595,6 +590,157 @@ class AppRequestController extends Controller
         ]);
     }
 
+    public function createRound(Request $request)
+    {
+        $subjects = explode(',', $request->subject);
+
+        $num = $request->num;
+        
+        $group = $request->group;
+
+        $round = DB::table('group_round')->insertGetId([
+            'group_id' => $group,
+            'created_at' => now(),
+        ]);
+
+
+        $questions = DB::table('question')->whereIn('subject_id', $subjects)->orderBy('correct_times', 'ASC')->limit($num)->get();
+
+
+        $questionsId = [];
+
+        $entries = [];
+
+        foreach($questions as $ques)
+        {
+
+            array_push($questionsId, $ques->id);
+            
+            $data['round_id'] = $round;
+
+            $data['question_id'] = $ques->id;
+
+            array_push($entries, $data);
+
+        }
+        
+
+
+        DB::table('round_questions')->INSERT($entries);
+
+
+
+
+        return response()->json([
+            'round' => $round,
+            'questions' => $entries,
+        ]);
+
+    }
+
+    public function startRound(Request $request)
+    {
+        $round = $request->round;
+
+        $questionsId = DB::table('round_questions')->where('round_id', $round)->get();
+
+        $roundQuestions = [];
+
+        foreach($questionsId as $ques)
+        {
+            array_push($roundQuestions, $ques->question_id);
+        }
+
+        $question = DB::table('question')->select('id', 'title')->whereIn('id', $roundQuestions)->get();
+
+        
+
+        $questionIds = [];
+        
+        foreach($question as $quest)
+        {
+            array_push($questionIds, $quest->id);
+        }
+
+        $answers = DB::table('answer')->whereIn('question_id', $questionIds)->inRandomOrder()->get();
+
+
+
+        $groupedAnswers = [];
+
+        foreach($question as $quest)
+        {
+            $data = [];
+
+            foreach($answers as $answer)
+            {
+                if($quest->id == $answer->question_id)
+                {
+                    array_push($data, $answer);
+                }
+            }
+
+            $groupedAnswers[$quest->id] = $data;
+
+        }
+
+
+        return response()->json([
+            'question' => $question,
+            'answer' => $groupedAnswers
+        ]);
+    }
+
+    public function groupResult(Request $request)
+    {
+
+        $user_id = $request->user;
+
+        $round = $request->round;
+
+        $questions = explode(',', $request->questions);
+
+        $correctQuestions = explode(',', $request->correctQuestions);
+
+
+        DB::table('users')->where('id', $userId)->UPDATE([
+            'answered_question' => DB::raw('answered_question + '. COUNT($questions)),
+            'correct_times' => DB::raw('correct_times + '. COUNT($correctQuestions))
+        ]);
+
+        DB::table('question')->whereIn($questions)->UPDATE([
+            'asked_times' => DB::raw('asked_times + 1')
+        ]);
+
+        DB::table('question')->whereIn($correctQuestions)->UPDATE([
+            'correct_times' => DB::raw('correct_times + 1')
+        ]);
+
+        DB::table('round_history')->INSERT([
+            'round_id' => $round,
+            'user_id' => $user_id,
+            'mark' => COUNT($correctQuestions)
+        ]);
+        
+    }
+
+    public function groupHistory(Request $request)
+    {
+        $group_id = $request->group_id;
+
+        $history = DB::table('round_history')->select('username', 'mark', 'round_id')
+                                             ->join('users', 'users.id', '=', 'user_id')
+                                             ->where('group_id', $group_id)
+                                             ->orderBy('mark', 'DESC')
+                                             ->get();
+
+        $rounds = $history->round_id;                        
+
+        return response()->json([
+            'history' => $history
+        ]);
+
+    }
 
 
 

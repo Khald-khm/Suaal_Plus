@@ -95,21 +95,48 @@
                     </div>
                 </div>
                 
-                <div class="form-group" style="margin-right:1% ;">
-                    <select style="text-align:right;width:60%;color: #2f3d4a;" class="form-select" name="unit" aria-label="Defaultselect example">
-                        <option selected id="one" >مدة الإعلان  </option>
-                        <option value="day" selected>يوم</option>
-                        <option value="month">شهر </option>
-                        <option value="year">سنة </option>
-                    </select>
-                </div>                            
-                
-                <br>
                 
                 <div class="form-group">
                     <label class="col-md-12" >المدة </label>
+                    <div class="input-group">
+                        
+                        <select style="text-align:right;color: #2f3d4a;" class="form-select" name="unit" aria-label="Defaultselect example">
+                            <option selected id="one" >مدة الإعلان  </option>
+                            <option value="day" selected>يوم</option>
+                            <option value="month">شهر </option>
+                            <option value="year">سنة </option>
+                        </select>
+                        
+                        <input type="number" class="form-control form-control-line" name="duration" value="{{ $days }}">
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label class="col-md-12" > هاتف </label>
                     <div class="col-md-12">
-                        <input type="text" class="form-control form-control-line" name="duration" value="{{ $days }}">
+                        <input type="text2" class="form-control form-control-line" name="phone" value="{{ $ad[0]->phone }}">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="col-md-12" > واتس </label>
+                    <div class="col-md-12">
+                        <input type="text2" class="form-control form-control-line" name="whats_app" value="{{ $ad[0]->whats_app }}">
+                    </div>
+                </div>
+                    
+                <div class="form-group">
+                    <label class="col-md-12" > تلغرام </label>
+                    <div class="col-md-12">
+                        <input type="text2" class="form-control form-control-line" name="telegram" value="{{ $ad[0]->telegram }}">
+                    </div>
+                </div>
+                    
+                <div class="form-group">
+                    <label class="col-md-12" > فيسبوك </label>
+                    <div class="col-md-12">
+                        <input type="text2" class="form-control form-control-line" name="facebook" value="{{ $ad[0]->facebook }}">
                     </div>
                 </div>
                     
@@ -124,7 +151,7 @@
 
                 <div class="form-group">
                     <label for="isText">إعلان كتابي</label>
-                    <input type="checkbox" value="1" name="isText" id="isText" @if($ad[0]->isText == 1) checked @endif>
+                    <input type="checkbox" class="form-check-input" value="1" name="isText" id="isText" @if($ad[0]->isText == 1) checked @endif>
                 </div>
 
 
