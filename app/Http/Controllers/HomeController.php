@@ -505,7 +505,7 @@ class HomeController extends Controller
     {
         $companies = DB::table('company')->get();
 
-        $copons = DB::table('copon')->select('copon.id', 'company.name AS company_name', 'copon.description', 'copon.status')->join('company', 'company.id', '=', 'copon.company_id')->get();
+        $copons = DB::table('copon')->select('copon.id', 'company.name AS company_name', 'copon.description', 'copon.status', 'phone', 'whats_app', 'facebook', 'telegram')->join('company', 'company.id', '=', 'copon.company_id')->get();
 
         return view('/company', ['companies' => $companies, 'copons' => $copons]);
     }
@@ -531,13 +531,25 @@ class HomeController extends Controller
             $filename = null;
         }
 
-        
+        $phone = $request->phone ?? null;
+
+        $whats_app = $request->whats_app ?? null;
+
+        $facebook = $request->facebook ?? null;
+
+        $telegram = $request->telegram ?? null;
+
+
         DB::table('company')->insert([
             'name' => $request->name,
+            'phone' => $phone,
+            'whats_app' => $whats_app,
+            'facebook' => $facebook,
+            'telegram' => $telegram,
             'logo' => $filename
         ]);
 
-        return redirect('/new-company');
+        return redirect('/company');
 
     }
 
@@ -554,14 +566,39 @@ class HomeController extends Controller
             'name' => 'required'
         ]);
 
-        if(!$request->file('logo'))
-        {
-            DB::table('company')->where('id', $request->id)->update([
-                'name' => $request->name
+
+        $phone = $request->phone ?? null;
+
+        $whats_app = $request->whats_app ?? null;
+
+        $facebook = $request->facebook ?? null;
+
+        $telegram = $request->telegram ?? null;
+
+        $filename = null;
+
+
+        $data = [];
+
+        $data['name'] = $request->name;
+
+        $data['phone'] = $phone;
+
+        $data['whats_app'] = $whats_app;
+
+        $data['facebook'] = $facebook;
+
+        $data['telegram'] = $telegram;
+        
+
+        // if(!$request->file('logo'))
+        // {
+        //     DB::table('company')->where('id', $request->id)->update([
+        //         'name' => $request->name
                 
-            ]);
-        }
-        else
+        //     ]);
+        // }
+        if($request->file('logo'))
         {
 
             $file = $request->file('logo');
@@ -570,11 +607,13 @@ class HomeController extends Controller
 
             $file->move(public_path('\img'), $filename);
 
-            DB::table('company')->where('id', $request->id)->update([
-                'name' => $request->name,
-                'logo' => $filename
-            ]);
+            $data['logo'] = $filename;
+
         }
+        
+        
+        DB::table('company')->where('id', $request->id)->update($data);
+
 
         return redirect('/company');
 

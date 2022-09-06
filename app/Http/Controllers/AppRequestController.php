@@ -751,7 +751,10 @@ class AppRequestController extends Controller
 
     public function copon()
     {
-        $copons = DB::table('copon')->get();
+        $copons = DB::table('copon')->select('copon.id', 'description', 'company.logo', 'phone', 'whats_app', 'facebook', 'telegram')
+                                    ->where('status', 'active')
+                                    ->join('company', 'company.id', '=', 'copon.company_id')
+                                    ->get();
 
         return response()->json([
             'copons' => $copons

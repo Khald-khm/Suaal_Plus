@@ -122,20 +122,7 @@
 
         @endforeach
         
-          <div class="col">
-            <div class="card" style="box-shadow: 0 0 20px 4px #6666663e">
-              <img src="{{ asset('img/company.jfif') }}" class="card-img-top"  alt="Avatar" >
-              <div class="card-body">
-                <h5 class="card-title" style="text-align: center;">الشركة 4</h5>
-
-                <div class="mt-4 d-flex justify-content-around">
-                  <a href="/delete-company"><i  class="fa fa-trash-o" style="font-size: 25px;"></i></a>
-                  <a href="/edit-company"><i  class="fa fa-edit" style="font-size: 25px;"></i></a>
-                  <span>عدد القسائم : <b style="font-size:large">7</b></span>
-                </div>
-              </div>
-            </div>
-          </div>
+         
 
 
         </div>
@@ -166,13 +153,7 @@
             
             @endforeach
 
-            <tr class="tr1">
-                <td class="td1" class="w3-center " > <a href="/delete-copon/" style="text-decoration: none;text-align:center">   <i  class="fa fa-trash-o" style="font-size: 25px;"></i> </a> </td>                
-                <td class="td1" class="w3-center " > <a href="/edit-copon/" style="text-decoration: none;text-align:center">   <i  class="fa fa-edit" style="font-size: 25px;"></i> </a> </td>
-                <td class="td1"> فعالة </td>
-                <td class="td1"> شركة 1 </td>                             
-                <td class="td1" style="width: 50%" > قسيمة 1 </td>
-            </tr>
+           
         
         
         </table>

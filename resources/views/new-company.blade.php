@@ -110,6 +110,34 @@
                         </div>
                     </div>
                   
+                    <div class="form-group">
+                        <label class="col-md-12"> هاتف </label>
+                        <div class="col-md-12">
+                            <input type="text2" name="phone" class="form-control form-control-line" required>
+                        </div>
+                    </div>
+                  
+                    <div class="form-group">
+                        <label class="col-md-12"> واتس  </label>
+                        <div class="col-md-12">
+                            <input type="text2" name="whats_app" class="form-control form-control-line" required>
+                        </div>
+                    </div>
+                  
+                    <div class="form-group">
+                        <label class="col-md-12"> فيسبوك  </label>
+                        <div class="col-md-12">
+                            <input type="text2" name="facebook" class="form-control form-control-line" required>
+                        </div>
+                    </div>
+                  
+                    <div class="form-group">
+                        <label class="col-md-12"> تلغرام  </label>
+                        <div class="col-md-12">
+                            <input type="text2" name="telegram" class="form-control form-control-line" required>
+                        </div>
+                    </div>
+                  
                     
                     <div class="form-group" style=" border-radius: 5px;   box-shadow: 0 5px 20px rgb(0 0 0 / 5%);">  
                         <label style="font-size: 25px;padding-bottom: 30px;"><b>  ارفق شعار الشركة  </b> </label>
