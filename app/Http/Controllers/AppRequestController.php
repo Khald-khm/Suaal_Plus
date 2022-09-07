@@ -141,6 +141,8 @@ class AppRequestController extends Controller
             'university_id' => $university_id,
             'study_year' => $study_year,
             'learning_type' => $learning_type,
+            'country' => $country,
+            'city' => $city,
             'status' => $status
         ]);
 
@@ -181,6 +183,8 @@ class AppRequestController extends Controller
                     'university_id' => $checkUser->university_id,
                     'study_year' => $checkUser->study_year,
                     'learning_type' => $checkUser->learning_type,
+                    'country' => $checkUser->country,
+                    'city' => $checkUser->city,
                     'status' => $checkUser->status,
                 ]);
             }
@@ -353,18 +357,66 @@ class AppRequestController extends Controller
 
 
 
-    public function allGroups()
+    public function allGroups(Request $request)
     {
-        $group = DB::table('groups')->select('groups.id', 'groups.name AS group_name', DB::raw('GROUP_CONCAT(subject.name SEPARATOR ",") AS subjects'), 'groups.learning_type', 'university.name AS university_name', 'admin_id', 'users.first_name', 'users.last_name', 'users_num', 'questions_num', 'type', 'from_time', 'to_time')
-                                    // ->join('group_subjects', 'group_id', '=', 'groups.id')
-                                    ->join('users', 'users.id', '=', 'admin_id')
-                                    ->join('group_subjects', 'group_subjects.group_id', '=', 'groups.id')
-                                    ->join('subject', 'subject.id', '=', 'group_subjects.subject_id')
-                                    ->join('university', 'university.id', '=', 'groups.university_id')
-                                    ->where('groups.status', 'active')
-                                    ->where('from_time', '>=', date('Y-m-d H:i:s'))
-                                    ->groupBy('groups.id')
-                                    ->get();
+
+        // Get the group where user already joined in
+
+        $myGroupsId = DB::table('groups')->select('group_id')
+                                         ->join('group_users', 'group_id', '=', 'groups.id')
+                                         ->where('group_users.user_id', $request->user_id)
+                                         ->get();
+
+
+        $groupsId = [];
+
+        foreach($myGroupsId as $groupId)
+        {
+            array_push($groupsId, $groupId->group_id);
+        }
+
+        // $myGroups = DB::table('')
+
+        // $lastRound = DB::table('')
+
+
+        $myGroup = DB::table('group_round')->select('group_id', 'groups.name AS group_name', DB::raw('GROUP_CONCAT(subject.name SEPARATOR ", ") AS subjects', 'gourp'), 'group_round.learning_type AS learning_type', 'university.name AS university_name', 'admin_id', 'users.first_name', 'users.last_name', 'questions_num', 'type', 'from_time', 'to_time')
+                                         ->join('groups', 'groups.id', '=', 'group_round.group_id')
+                                         ->join('users', 'users.id', '=', 'groups.admin_id')
+                                         ->join('round_subjects', 'round_subjects.round_id', '=', 'group_round.id')
+                                         ->join('subject', 'subject.id' , '=', 'round_subjects.subject_id')
+                                         ->join('university', 'university.id', '=', 'group_round.university_id')
+                                         ->where('groups.status', 'active')
+                                         ->where('from_time', '>=', date('Y-m-d H:i:s'))
+                                         ->groupBy('group_round.id')
+                                         ->whereIn('group_id', $groupsId)
+                                         ->get();
+
+
+
+        $group = DB::table('group_round')->select('group_id', 'groups.name AS group_name', DB::raw('GROUP_CONCAT(subject.name SEPARATOR ", ") AS subjects', 'gourp'), 'group_round.learning_type AS learning_type', 'university.name AS university_name', 'admin_id', 'users.first_name', 'users.last_name', 'questions_num', 'type', 'from_time', 'to_time')
+                                         ->join('groups', 'groups.id', '=', 'group_round.group_id')
+                                         ->join('users', 'users.id', '=', 'groups.admin_id')
+                                         ->join('round_subjects', 'round_subjects.round_id', '=', 'group_round.id')
+                                         ->join('subject', 'subject.id' , '=', 'round_subjects.subject_id')
+                                         ->join('university', 'university.id', '=', 'group_round.university_id')
+                                         ->where('groups.status', 'active')
+                                         ->where('from_time', '>=', date('Y-m-d H:i:s'))
+                                         ->groupBy('group_round.id')
+                                         ->whereNotIn('group_id', $groupsId)
+                                         ->get();
+
+
+        // $group = DB::table('groups')->select('groups.id', 'groups.name AS group_name', DB::raw('GROUP_CONCAT(subject.name SEPARATOR ",") AS subjects'), 'groups.learning_type', 'university.name AS university_name', 'admin_id', 'users.first_name', 'users.last_name', 'users_num', 'questions_num', 'type', 'from_time', 'to_time')
+        //                             // ->join('group_subjects', 'group_id', '=', 'groups.id')
+        //                             ->join('users', 'users.id', '=', 'admin_id')
+        //                             ->join('group_subjects', 'group_subjects.group_id', '=', 'groups.id')
+        //                             ->join('subject', 'subject.id', '=', 'group_subjects.subject_id')
+        //                             ->join('university', 'university.id', '=', 'groups.university_id')
+        //                             ->where('groups.status', 'active')
+        //                             ->where('from_time', '>=', date('Y-m-d H:i:s'))
+        //                             ->groupBy('groups.id')
+        //                             ->get();
 
 
                                     
@@ -380,6 +432,7 @@ class AppRequestController extends Controller
 
 
         return response()->json([
+            'myGroup' => $myGroup,
             'group' => $group
         ]);
     }
@@ -413,36 +466,89 @@ class AppRequestController extends Controller
         
         $groupId = DB::table('groups')->insertGetId([
             'name' => $request->name,
-            'learning_type' => $request->learning_type,
-            'university_id' => $request->university_id,
             'admin_id' => $request->admin_id,
-            'users_num' => '0',
-            'questions_num' => $request->questions_num,
             'type' => $request->type,
             'password' => $password,
-            'from_time' => $request->from_time,
-            'to_time' => $request->to_time,
             'status' => 'active'
         ]);
         
 
+        
+        
+        // create new round for this group
+        
+        $roundId = DB::table('group_round')->insertGetId([
+            'group_id' => $groupId,
+            'learning_type' => $request->learning_type,
+            'university_id' => $request->university_id,
+            'questions_num' => $request->questions_num,
+            'from_time' => $request->from_time,
+            'to_time' => $request->to_time,
+            'created_at' => now()
+        ]);
+        
+        
 
 
-        // Insert subject to group_subjects table
+
+        // Insert subject to round_subjects table
         $subjects = explode(',', $request->subject);
 
         $data = [];
 
         foreach($subjects as $subject)
         {
-            array_push($data, ['group_id' => $groupId, 'subject_id' => $subject]);
+            array_push($data, ['round_id' => $roundId, 'subject_id' => $subject]);
         }
 
 
+        DB::table('round_subjects')->insert($data);
 
-        // Insert subject into group_subjects
-        DB::table('group_subjects')->insert($data);
+        
 
+        // Insert questions for the round
+
+        
+        $questions = DB::table('question')->whereIn('subject_id', $subjects)->orderBy('correct_times', 'ASC')->limit($request->questions_num)->get();
+
+        $questions_id = [];
+
+        $entries = [];
+
+        foreach($questions as $ques)
+        {
+
+            
+            $questions_id['round_id'] = $roundId;
+
+            $questions_id['question_id'] = $ques->id;
+
+            array_push($entries, $questions_id);
+
+        }
+        
+
+
+        DB::table('round_questions')->INSERT($entries);
+
+
+
+        // Insert admin into the group_users table
+
+        DB::table('group_users')->insert([
+            'group_id' => $groupId,
+            'user_id' => $request->admin_id,
+        ]);
+
+
+
+        // Insert starts admin mark for this round
+
+        DB::table('round_history')->insert([
+            'round_id' => $roundId,
+            'user_id' => $request->admin_id,
+            'mark' => 0
+        ]);
 
 
         return response()->json([
@@ -547,10 +653,25 @@ class AppRequestController extends Controller
         }
         else
         {
+
+            // Insert user into group
+
             DB::table('group_users')->insert([
                 'group_id' => $request->group_id,
                 'user_id' => $request->user_id
             ]);
+
+
+            // Insert user mark into round_history
+
+            $roundId = DB::table('group_round')->where('group_id', $request->group_id)->orderBy('id', 'DESC')->first();
+
+            DB::table('round_history')->insert([
+                'round_id' => $roundId->id,
+                'user_id' => $request->user_id,
+                'mark' => 0
+            ]);
+
 
             return response()->json([
                 'message' => 'success'
@@ -590,53 +711,53 @@ class AppRequestController extends Controller
         ]);
     }
 
-    public function createRound(Request $request)
-    {
-        $subjects = explode(',', $request->subject);
+    // public function createRound(Request $request)
+    // {
+    //     $subjects = explode(',', $request->subject);
 
-        $num = $request->num;
+    //     $num = $request->num;
         
-        $group = $request->group;
+    //     $group = $request->group;
 
-        $round = DB::table('group_round')->insertGetId([
-            'group_id' => $group,
-            'created_at' => now(),
-        ]);
-
-
-        $questions = DB::table('question')->whereIn('subject_id', $subjects)->orderBy('correct_times', 'ASC')->limit($num)->get();
+    //     $round = DB::table('group_round')->insertGetId([
+    //         'group_id' => $group,
+    //         'created_at' => now(),
+    //     ]);
 
 
-        $questionsId = [];
+    //     $questions = DB::table('question')->whereIn('subject_id', $subjects)->orderBy('correct_times', 'ASC')->limit($num)->get();
 
-        $entries = [];
 
-        foreach($questions as $ques)
-        {
+    //     $questionsId = [];
 
-            array_push($questionsId, $ques->id);
+    //     $entries = [];
+
+    //     foreach($questions as $ques)
+    //     {
+
+    //         array_push($questionsId, $ques->id);
             
-            $data['round_id'] = $round;
+    //         $data['round_id'] = $round;
 
-            $data['question_id'] = $ques->id;
+    //         $data['question_id'] = $ques->id;
 
-            array_push($entries, $data);
+    //         array_push($entries, $data);
 
-        }
+    //     }
         
 
 
-        DB::table('round_questions')->INSERT($entries);
+    //     DB::table('round_questions')->INSERT($entries);
 
 
 
 
-        return response()->json([
-            'message' => 'success',
-            'round' => $round,
-        ]);
+    //     return response()->json([
+    //         'message' => 'success',
+    //         'round' => $round,
+    //     ]);
 
-    }
+    // }
 
     public function startRound(Request $request)
     {

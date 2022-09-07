@@ -40,7 +40,7 @@ Route::middleware('auth:sanctum')->post('/quizResult', [AppRequestController::cl
 
 
 
-Route::middleware('auth:sanctum')->get('/allGroups', [AppRequestController::class, 'allGroups']);
+Route::middleware('auth:sanctum')->post('/allGroups', [AppRequestController::class, 'allGroups']);
 
 Route::middleware('auth:sanctum')->post('/createGroup',[AppRequestController::class, 'createGroup']);
 
