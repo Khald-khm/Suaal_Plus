@@ -58,7 +58,7 @@ Route::middleware('auth:sanctum')->post('/startRound', [AppRequestController::cl
 
 Route::middleware('auth:sanctum')->post('/groupResult', [AppRequestController::class, 'groupResult']);
 
-Route::middleware('auth:sanctum')->post('/groupHistory', [AppRequestController::class, 'groupHistory']);
+Route::middleware('auth:sanctum')->post('/roundHistory', [AppRequestController::class, 'roundHistory']);
 
 
 

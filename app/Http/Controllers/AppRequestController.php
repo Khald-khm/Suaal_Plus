@@ -23,6 +23,7 @@ class AppRequestController extends Controller
 
         
         
+        // Check if username exist or not
         $checkUsername = User::where('username', $request->username)->count();
 
         if($checkUsername == 0)
@@ -36,6 +37,8 @@ class AppRequestController extends Controller
             ]);
         }
 
+
+        // Check if email exist or not
         $checkEmail = User::where('email', $request->email)->count();
 
         
@@ -61,6 +64,7 @@ class AppRequestController extends Controller
         }
         
 
+        // Check if Phone number exist or not
         $checkPhone = User::where('phone', $request->phone)->count();
 
         if($checkPhone == 0)
@@ -103,6 +107,7 @@ class AppRequestController extends Controller
 
 
 
+        // Insert user into DB
         $user = User::create([
             'first_name' => $first_name,
             'last_name' => $last_name,
@@ -122,7 +127,7 @@ class AppRequestController extends Controller
         ]);
 
 
-        $userId = User::where('email', '=', $request->email)->firstOrFail();
+        $userId = User::where('phone', '=', $request->phone)->firstOrFail();
 
 
         $userToken = $userId->createToken('_token_'.$request->phone)->plainTextToken;
@@ -333,9 +338,13 @@ class AppRequestController extends Controller
     public function quizResult(Request $request)
     {
 
-        $correctQuestion = explode(',', $request->correctQuestion);
+        $correctQuestions = rtrim($request->correctQuestion, ',');
 
-        $wrongQuestion = explode(',', $request->wrongQuestion);
+        $wrongQuestions = rtrim($request->wrongQuestion, ',');
+
+        $correctQuestion = explode(',', $correctQuestions);
+
+        $wrongQuestion = explode(',', $wrongQuestions);
 
 
         DB::table('question')->whereIn('id', $correctQuestion)->UPDATE([
@@ -360,7 +369,11 @@ class AppRequestController extends Controller
     public function allGroups(Request $request)
     {
 
-        // Get the group where user already joined in
+        $request->validate([
+            'user_id' => 'required'
+        ]);
+
+        // Get the groups IDs which user had already joined in
 
         $myGroupsId = DB::table('groups')->select('group_id')
                                          ->join('group_users', 'group_id', '=', 'groups.id')
@@ -375,11 +388,9 @@ class AppRequestController extends Controller
             array_push($groupsId, $groupId->group_id);
         }
 
-        // $myGroups = DB::table('')
-
-        // $lastRound = DB::table('')
 
 
+        // All user's groups
         $myGroup = DB::table('group_round')->select('group_id', 'groups.name AS group_name', DB::raw('GROUP_CONCAT(subject.name SEPARATOR ", ") AS subjects', 'gourp'), 'group_round.learning_type AS learning_type', 'university.name AS university_name', 'admin_id', 'users.first_name', 'users.last_name', 'questions_num', 'type', 'from_time', 'to_time')
                                          ->join('groups', 'groups.id', '=', 'group_round.group_id')
                                          ->join('users', 'users.id', '=', 'groups.admin_id')
@@ -394,6 +405,7 @@ class AppRequestController extends Controller
 
 
 
+        // All groups except user's groups
         $group = DB::table('group_round')->select('group_id', 'groups.name AS group_name', DB::raw('GROUP_CONCAT(subject.name SEPARATOR ", ") AS subjects', 'gourp'), 'group_round.learning_type AS learning_type', 'university.name AS university_name', 'admin_id', 'users.first_name', 'users.last_name', 'questions_num', 'type', 'from_time', 'to_time')
                                          ->join('groups', 'groups.id', '=', 'group_round.group_id')
                                          ->join('users', 'users.id', '=', 'groups.admin_id')
@@ -509,7 +521,7 @@ class AppRequestController extends Controller
         // Insert questions for the round
 
         
-        $questions = DB::table('question')->whereIn('subject_id', $subjects)->orderBy('correct_times', 'ASC')->limit($request->questions_num)->get();
+        $questions = DB::table('question')->whereIn('subject_id', $subjects)->inRandomOrder()->limit($request->questions_num)->get();
 
         $questions_id = [];
 
@@ -763,6 +775,12 @@ class AppRequestController extends Controller
     {
         $round = $request->round;
 
+
+        $roundTime = DB::table('group_round')->where('id', $round)->first();
+
+        $end_time = $roundTime->to_time;
+
+
         $questionsId = DB::table('round_questions')->where('round_id', $round)->get();
 
         $roundQuestions = [];
@@ -807,6 +825,7 @@ class AppRequestController extends Controller
 
 
         return response()->json([
+            'end_time' => $end_time,
             'question' => $question,
             'answer' => $groupedAnswers
         ]);
@@ -849,17 +868,16 @@ class AppRequestController extends Controller
         
     }
 
-    public function groupHistory(Request $request)
+    public function roundHistory(Request $request)
     {
-        $group_id = $request->group_id;
+        $round_id = $request->round_id;
 
-        $history = DB::table('round_history')->select('username', 'mark', 'round_id')
+        $history = DB::table('round_history')->select('username', 'mark')
                                              ->join('users', 'users.id', '=', 'user_id')
-                                             ->where('group_id', $group_id)
+                                             ->where('round_id', '=', $round_id)
                                              ->orderBy('mark', 'DESC')
                                              ->get();
-
-        $rounds = $history->round_id;                        
+                       
 
         return response()->json([
             'history' => $history
