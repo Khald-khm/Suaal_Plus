@@ -38,20 +38,6 @@ class AppRequestController extends Controller
         }
 
 
-        // Check if email exist or not
-        $checkEmail = User::where('email', $request->email)->count();
-
-        
-        if($checkEmail == 0)
-        {
-            $email = $request->email;
-        }
-        else
-        {
-            return response()->json([
-                'message' => 'This email is already exist',
-            ]);
-        }
 
         
         $password = Hash::make(trim($request->password)) ?? null;
@@ -112,7 +98,6 @@ class AppRequestController extends Controller
             'first_name' => $first_name,
             'last_name' => $last_name,
             'username' => $username,
-            'email' => $email,
             'password' => $password,
             'phone' => $phone,
             'country' => $country,
@@ -282,11 +267,6 @@ class AppRequestController extends Controller
             $question = $question->where('university_id', $request->university);
         }
 
-        if(isset($request->type))
-        {
-            $question = $question->where('type', $request->type);
-            
-        }
 
         if(isset($request->year_time))
         {
@@ -381,6 +361,11 @@ class AppRequestController extends Controller
                                          ->get();
 
 
+        
+
+
+
+
         $groupsId = [];
 
         foreach($myGroupsId as $groupId)
@@ -388,6 +373,7 @@ class AppRequestController extends Controller
             array_push($groupsId, $groupId->group_id);
         }
 
+        
 
 
         // All user's groups
@@ -419,28 +405,6 @@ class AppRequestController extends Controller
                                          ->get();
 
 
-        // $group = DB::table('groups')->select('groups.id', 'groups.name AS group_name', DB::raw('GROUP_CONCAT(subject.name SEPARATOR ",") AS subjects'), 'groups.learning_type', 'university.name AS university_name', 'admin_id', 'users.first_name', 'users.last_name', 'users_num', 'questions_num', 'type', 'from_time', 'to_time')
-        //                             // ->join('group_subjects', 'group_id', '=', 'groups.id')
-        //                             ->join('users', 'users.id', '=', 'admin_id')
-        //                             ->join('group_subjects', 'group_subjects.group_id', '=', 'groups.id')
-        //                             ->join('subject', 'subject.id', '=', 'group_subjects.subject_id')
-        //                             ->join('university', 'university.id', '=', 'groups.university_id')
-        //                             ->where('groups.status', 'active')
-        //                             ->where('from_time', '>=', date('Y-m-d H:i:s'))
-        //                             ->groupBy('groups.id')
-        //                             ->get();
-
-
-                                    
-        // $group = DB::table('groups')->select('groups.id', 'groups.name AS group_name', DB::raw('GROUP_CONCAT(subject_id SEPARATOR ",") AS subjects'), 'groups.learning_type', 'university.name AS university_name', 'users.first_name', 'users.last_name', 'users_num', 'questions_num', 'type', 'from_time', 'to_time')
-        // // ->join('group_subjects', 'group_id', '=', 'groups.id')
-        // ->join('users', 'users.id', '=', 'admin_id')
-        // ->join('group_subjects', 'group_subjects.group_id', '=', 'groups.id')
-        // ->join('university', 'university.id', '=', 'groups.university_id')
-        // ->where('groups.status', 'active')
-        // ->where('from_time', '>=', date('Y-m-d H:i:s'))
-        // ->groupBy('groups.id')
-        // ->get();
 
 
         return response()->json([
@@ -685,6 +649,9 @@ class AppRequestController extends Controller
             ]);
 
 
+        
+
+
             return response()->json([
                 'message' => 'success'
             ]);
@@ -822,6 +789,9 @@ class AppRequestController extends Controller
             $groupedAnswers[$quest->id] = $data;
 
         }
+
+
+       
 
 
         return response()->json([
